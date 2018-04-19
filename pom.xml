@@ -11,8 +11,8 @@
     <packaging>pom</packaging>
 
     <modules>
-		<module>bumo-encryption-src</module>
-		<module>bumo-encryption-example</module>
+		<module>src</module>
+		<module>examples</module>
     </modules>
 
     <build>

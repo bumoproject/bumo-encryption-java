@@ -1,4 +1,4 @@
-# __布萌JAVA ENCRYPTIOIN使用文档__
+# __BUMO JAVA ENCRYPTIOIN使用文档__
 
 ## 1 用途
 用于生成公私钥和地址，以及签名，和验签，只支持ED25519和SM2，默认是ED25519。

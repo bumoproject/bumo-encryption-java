@@ -3,10 +3,10 @@
 ## 简介
 Java开发人员可以轻松通过Bumo Java Encryption操作Bumo区块链。您可以在几分钟内通过Maven或下载jar包的方式完成SDK的安装。
 
-1. [bumo-encryption-docs](/bumo-encryption-docs) 是 Bumo Java Encryption 的使用文档。
-2. [bumo-encryption-example](/bumo-encryption-example) 是一个基于maven的项目示例。
-3. [bumo-encryption-libs](/bumo-encryption-libs)  是 Bumo Java Encryption 的 jar 包以及依赖包。
-4. [bumo-encryption-src](/bumo-encryption-src)  是 Bumo Java Encryption 的源代码
+1. [docs](/docs) 是 Bumo Java Encryption 的使用文档。
+2. [example](/example) 是一个基于maven的项目示例。
+3. [libs](/libs)  是 Bumo Java Encryption 的 jar 包以及依赖包。
+4. [src](/src)  是 Bumo Java Encryption 的源代码
 
 ## 准备环境
 
@@ -19,7 +19,7 @@ Java开发人员可以轻松通过Bumo Java Encryption操作Bumo区块链。您�
 
 本文的以1.0.0版本为例说明
 
-maven 远程仓库
+maven 远程仓库 (仓库正在建设中......)
 ``` xml
 <repository>
     <id>pubnexus</id>                
@@ -48,4 +48,4 @@ maven 远程仓库
 ## 示例工程
 Bumo Java Encryption 提供了丰富的示例，供开发者参考
 
-[示例文档入口](/bumo-encryption-docs)
+[示例文档入口](/docs)
