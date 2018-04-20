@@ -1,24 +1,42 @@
 # __BUMO JAVA ENCRYPTIOIN使用文档__
 
-## 1 用途
+- [BUMO JAVA ENCRYPTIOIN使用文档](#__BUMO JAVA ENCRYPTIOIN使用文档__)
+    - [用途](#1.用途)
+    - [包引用](#2.包引用)
+    - [构造对象](#3.构造对象)
+        - [构造PrivateKey对象](#3.1构造PrivateKey对象)
+        - [构造PublicKey对象](#3.2构造PublicKey对象)
+    -[接口详细](#4.接口详细)
+        - [签名](#4.1签名（非静态）)
+        - [获取私钥](#4.5获取私钥（非静态）)
+        - [获取公钥](#4.6获取公钥（非静态）)
+        - [获取地址](#4.8获取地址（非静态）)
+        - [计算hash](#4.10计算hash)
+    - [举例说明](#5.举例说明)
+        - [创建账户](#5.1创建账户)
+        - [发行资产](#5.2发行资产)
+        - [转移资产](#5.2发行资产)
+        - [转移BU币](#5.3转移BU币)
+
+## 1.用途
 用于生成公私钥和地址，以及签名，和验签，只支持ED25519和SM2，默认是ED25519。
 
-## 2 jar包引用
+## 2.包引用
 所依赖的jar包在jar文件夹中寻找，依赖的jar包如下：
 
 1. bumo-encryption-1.0.0.jar:用于生成公私钥和地址，以及签名，和验签，详细请看下面介绍
 2. sadk-3.2.3.0.RELEASE.jar:用于SM2的签名操作
 
-## 2 构造对象
-### 2.1 构造PrivateKey对象
-#### 2.1.1 签名方式构造
+## 3.构造对象
+### 3.1构造PrivateKey对象
+#### 3.1.1签名方式构造
 
 示例：
 ```java
 PrivateKey privateKey = new PrivateKey(KeyType.ED25519);
 ````
 
-### 2.1.2 私钥构造
+### 3.1.2私钥构造
 参数是编码后的私钥
 
 示例如下：
@@ -27,8 +45,8 @@ String encPrivateKey;
 PrivateKey privateKey = new PrivateKey(encPrivateKey);
 ```
 
-### 2.2 构造PublicKey对象
-#### 2.2.1 公钥构造
+### 3.2构造PublicKey对象
+#### 3.2.1公钥构造
 参数是编码的公钥
 
 示例如下：
@@ -37,8 +55,8 @@ String encPublicKey;
 PublicKey publicKey = new PublicKey(encPublicKey);
 ```
 
-### 3 接口详细描述
-#### 3.1签名（非静态）
+### 4.接口详细
+#### 4.1签名（非静态）
 方法名: sign
 注意：调用此方法需要构造PrivateKey对象
 
@@ -61,7 +79,7 @@ String src = "test";
 byte[] signMsg = privateKey.sign(src.getBytes());
 ```
 
-#### 3.2 签名（静态）
+#### 4.2签名（静态）
 方法名: sign
 注意：调用此方法不需要构造PrivateKey对象
 
@@ -85,7 +103,7 @@ String privateKey;
 byte[] sign = PrivateKey.sign(src.getBytes(), privateKey);
 ```
 
-#### 3.3 验签（非静态）
+#### 4.3验签（非静态）
 方法名: verify
 注意：调用此方法需要构造PublicKey对象
 
@@ -112,7 +130,7 @@ String src = "test";
 Boolean verifyResult = publicKey.verify(src.getBytes(), sign.getBytes());
 ```
 
-##### 3.4 验签（静态）
+#### 4.4验签（静态）
 方法名: verify
 注意：调用此方法不需要构造PublicKey对象
 
@@ -139,7 +157,7 @@ Boolean verifyResult = PublicKey.verify(src.getBytes(), sign, publicKey);
 ```
 
 
-#### 3.5 获取私钥（非静态）
+#### 4.5获取私钥（非静态）
 方法名：getEncPrivateKey
 注意：调用此方法需要构造PrivateKey对象
 
@@ -157,7 +175,7 @@ PrivateKey privateKey = new PrivateKey(KeyType.ECCSM2);
 String encPrivateKey = privateKey.getEncPrivateKey();
 ```
 
-#### 3.6 获取公钥（非静态）
+#### 4.6获取公钥（非静态）
 方法名：getEncPublicKey
 注意：调用此方法需要构造PrivateKey对象
 
@@ -175,7 +193,7 @@ PrivateKey privateKey = new PrivateKey(KeyType.ECCSM2);
 String encPublicKey = privateKey.getEncPublicKey();
 ```
 
-#### 3.7 获取公钥（静态）
+#### 4.7获取公钥（静态）
 方法名：getEncPublicKey
 注意：调用此方法不需要构造PrivateKey对象
 
@@ -197,7 +215,7 @@ String encPrivateKey;
 String encPublicKey = PrivateKey.getEncPublicKey(encPrivateKey);
 ```
 
-#### 3.8 获取地址（非静态）
+#### 4.8获取地址（非静态）
 方法名：getEncAddress
 注意：调用此方法需要构造PublicKey对象
 
@@ -216,7 +234,7 @@ PublicKey publicKey = new PublicKey(encPublicKey);
 String encAddress = publicKey.getEncAddress();
 ```
 
-#### 3.9 获取地址（静态）
+#### 4.9获取地址（静态）
 方法名：getEncAddress
 注意：调用此方法不需要构造PublicKey对象
 
@@ -238,7 +256,7 @@ String encPublicKey;
 String encAddress = PublicKey.getEncAddress(encPublicKey);
 ```
 
-#### 3.12 计算hash
+#### 4.10计算hash
 方法名：GenerateHashHex
 路径：org.bumo.encryption.utils.HashUtil
 
@@ -262,8 +280,8 @@ String hash = HashUtil.GenerateHashHex(tran.build().toByteArray(), hash_type);
 
 若要获取bumo底层的hash类型，需要访问http的hello接口，会返回hash类型
 
-### 4 举例说明
-#### 4.1 创建账户
+### 5.举例说明
+#### 5.1创建账户
 测试例子如下：
 
 ```java
@@ -362,7 +380,7 @@ PrivateKey bumoKey = TestCreateAccount(url, address, privateKey, publicKey, addr
 System.out.println(bumoKey);
 ```
 
-#### 4.2 发行资产
+#### 5.2发行资产
 测试例子如下：
 ```java
 public static PrivateKey TestIssueAsset(String url, String address, String privateKey, String publicKey, String code, long amount) {
@@ -449,7 +467,7 @@ String address = "buQdBdkvmAhnRrhLp4dmeCc2ft7RNE51c9EK";
 TestIssueAsset(url, bumoKey.getEncAddress(), bumoKey.getEncPrivateKey(), bumoKey.getEncPublicKey(), "CNY", 10000);
 ```
 
-#### 4.3 转移资产
+#### 5.3转移资产
 测试例子如下：
 
 ```java
@@ -544,7 +562,7 @@ String address = "buQdBdkvmAhnRrhLp4dmeCc2ft7RNE51c9EK";
 TestPayment(url, bumoKey.getEncAddress(), bumoKey.getEncAddress(), bumoKey.getEncPrivateKey(), bumoKey.getEncPublicKey(), address, "CNY", 5000);
 ```
 
-#### 4.3 转移BU币
+#### 5.3转移BU币
 测试例子如下 ：
 
 ```java
