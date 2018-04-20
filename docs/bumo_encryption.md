@@ -3,15 +3,19 @@
 - [BUMO JAVA ENCRYPTIOIN使用文档](#__BUMO JAVA ENCRYPTIOIN使用文档__)
     - [用途](#用途)
     - [包引用](#包引用)
-    - [构造对象](#构造对象)
-        - [构造私钥对象](#构造私钥对象)
-        - [构造公钥对象](#构造公钥对象)
-    - [接口详细](#接口详细)
+    - [私钥](#私钥)
+        - [构造对象](#构造对象)
+        - [获取编码后私钥](#获取编码后私钥)
+        - [获取编码后公钥](#获取编码后公钥)
         - [签名](#签名)
-        - [获取私钥](#获取私钥)
-        - [获取公钥](#获取公钥)
-        - [获取地址](#获取地址)
-        - [计算hash](#计算hash)
+    - [公钥](#公钥)
+        - [构造对象](#构造对象)
+        - [获取编码后地址](#获取编码后地址)
+        - [验签](#验签)
+    - [密钥存储器](#密钥存储器)
+        - [生成密钥存储器](#生成密钥存储器)
+        - [解析密钥存储器](#解析密钥存储器)
+    - [计算哈希](#计算哈希)
     - [举例说明](#举例说明)
         - [创建账户](#创建账户)
         - [发行资产](#发行资产)
@@ -27,8 +31,8 @@
 1. bumo-encryption-1.0.0.jar:用于生成公私钥和地址，以及签名，和验签，详细请看下面介绍
 2. sadk-3.2.3.0.RELEASE.jar:用于SM2的签名操作
 
-## 构造对象
-### 构造私钥对象
+## 私钥
+### 构造对象
 #### 签名方式构造
 
 示例：
@@ -45,19 +49,68 @@ String encPrivateKey;
 PrivateKey privateKey = new PrivateKey(encPrivateKey);
 ```
 
-### 构造公钥对象
-#### 公钥构造
-参数是编码的公钥
+### 获取编码后私钥
+#### 非静态接口
+方法名：getEncPrivateKey
+注意：调用此方法需要构造PrivateKey对象
 
-示例如下：
+请求参数：无
+
+返回结果：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| encPrivateKey | String | 编码后的私钥
+
+例如：
 ```java
-String encPublicKey;
-PublicKey publicKey = new PublicKey(encPublicKey);
+PrivateKey privateKey = new PrivateKey(KeyType.ECCSM2);
+String encPrivateKey = privateKey.getEncPrivateKey();
 ```
 
-### 接口详细
-#### 签名
-##### 非静态接口
+### 获取编码后公钥
+#### 非静态接口
+方法名：getEncPublicKey
+注意：调用此方法需要构造PrivateKey对象
+
+请求参数：无
+
+返回结果：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| encPublicKey | String | 编码后的公钥
+
+例如：
+```java
+PrivateKey privateKey = new PrivateKey(KeyType.ECCSM2);
+String encPublicKey = privateKey.getEncPublicKey();
+```
+
+#### 静态接口
+方法名：getEncPublicKey
+注意：调用此方法不需要构造PrivateKey对象
+
+请求参数：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| EncPrivateKey | String | 编码的私钥
+
+返回结果：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| encPublicKey | String | 编码的公钥
+
+例如：
+```java
+String encPrivateKey;
+String encPublicKey = PrivateKey.getEncPublicKey(encPrivateKey);
+```
+
+### 签名
+#### 非静态接口
 方法名: sign
 注意：调用此方法需要构造PrivateKey对象
 
@@ -80,7 +133,7 @@ String src = "test";
 byte[] signMsg = privateKey.sign(src.getBytes());
 ```
 
-##### 静态接口
+#### 静态接口
 方法名: sign
 注意：调用此方法不需要构造PrivateKey对象
 
@@ -104,8 +157,61 @@ String privateKey;
 byte[] sign = PrivateKey.sign(src.getBytes(), privateKey);
 ```
 
-#### 验签
-##### 非静态接口
+## 公钥
+### 构造对象
+#### 签名方式构造
+参数是编码的公钥
+
+示例如下：
+```java
+String encPublicKey;
+PublicKey publicKey = new PublicKey(encPublicKey);
+```
+
+### 获取编码后地址
+#### 非静态接口
+方法名：getEncAddress
+注意：调用此方法需要构造PublicKey对象
+
+请求参数： 无
+
+返回结果：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| encAddress | String | 编码的地址
+
+例如：
+```java
+String encPublicKey = "";
+PublicKey publicKey = new PublicKey(encPublicKey);
+String encAddress = publicKey.getEncAddress();
+```
+
+#### 静态接口
+方法名：getEncAddress
+注意：调用此方法不需要构造PublicKey对象
+
+请求参数：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| encPrivateKey | String | 编码的私钥
+
+返回结果：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| encAddress | String | 编码后的地址
+
+例如：
+```java
+String encPublicKey;
+String encAddress = PublicKey.getEncAddress(encPublicKey);
+```
+
+### 验签
+#### 非静态接口
 方法名: verify
 注意：调用此方法需要构造PublicKey对象
 
@@ -132,7 +238,7 @@ String src = "test";
 Boolean verifyResult = publicKey.verify(src.getBytes(), sign.getBytes());
 ```
 
-##### 静态接口
+#### 静态接口
 方法名: verify
 注意：调用此方法不需要构造PublicKey对象
 
@@ -158,110 +264,41 @@ String sign = "";
 Boolean verifyResult = PublicKey.verify(src.getBytes(), sign, publicKey);
 ```
 
-
-#### 获取私钥
-##### 非静态接口
-方法名：getEncPrivateKey
-注意：调用此方法需要构造PrivateKey对象
-
-请求参数：无
-
-返回结果：
-
-|变量|类型|描述
-|:--- | --- | --- 
-| encPrivateKey | String | 编码后的私钥
-
-例如：
-```java
-PrivateKey privateKey = new PrivateKey(KeyType.ECCSM2);
-String encPrivateKey = privateKey.getEncPrivateKey();
-```
-
-#### 获取公钥
-##### 非静态接口
-方法名：getEncPublicKey
-注意：调用此方法需要构造PrivateKey对象
-
-请求参数：无
-
-返回结果：
-
-|变量|类型|描述
-|:--- | --- | --- 
-| encPublicKey | String | 编码后的公钥
-
-例如：
-```java
-PrivateKey privateKey = new PrivateKey(KeyType.ECCSM2);
-String encPublicKey = privateKey.getEncPublicKey();
-```
-
-##### 静态接口
-方法名：getEncPublicKey
-注意：调用此方法不需要构造PrivateKey对象
+## 密钥存储器
+### 生成密钥存储器
+此方法是静态方法
 
 请求参数：
 
 |变量|类型|描述
 |:--- | --- | --- 
-| EncPrivateKey | String | 编码的私钥
+| password | String | 口令
+| newEncPrivateKey | String | 待存储的密钥，可为null
 
 返回结果：
 
 |变量|类型|描述
 |:--- | --- | --- 
-| encPublicKey | String | 编码的公钥
+| newEncPrivateKey | String | 已存储的密钥，当参数中newEncPrivateKey不为null,此值就是入参；否则 ，这是新创建的密钥
+| keyStore | JSONObject | 存储密钥的存储器
 
-例如：
-```java
-String encPrivateKey;
-String encPublicKey = PrivateKey.getEncPublicKey(encPrivateKey);
-```
-
-#### 获取地址
-##### 非静态接口
-方法名：getEncAddress
-注意：调用此方法需要构造PublicKey对象
-
-请求参数： 无
-
-返回结果：
-
-|变量|类型|描述
-|:--- | --- | --- 
-| encAddress | String | 编码的地址
-
-例如：
-```java
-String encPublicKey = "";
-PublicKey publicKey = new PublicKey(encPublicKey);
-String encAddress = publicKey.getEncAddress();
-```
-
-##### 静态接口
-方法名：getEncAddress
-注意：调用此方法不需要构造PublicKey对象
+### 解析密钥存储器
+此方法是静态方法
 
 请求参数：
 
 |变量|类型|描述
 |:--- | --- | --- 
-| encPrivateKey | String | 编码的私钥
+| password | String | 口令
+| keyStore | JSONObject | 存储密钥的存储器
 
 返回结果：
 
 |变量|类型|描述
 |:--- | --- | --- 
-| encAddress | String | 编码后的地址
+| encPrivateKey | String | 解析出来的密钥
 
-例如：
-```java
-String encPublicKey;
-String encAddress = PublicKey.getEncAddress(encPublicKey);
-```
-
-#### 计算hash
+## 计算哈希
 方法名：GenerateHashHex
 路径：org.bumo.encryption.utils.HashUtil
 

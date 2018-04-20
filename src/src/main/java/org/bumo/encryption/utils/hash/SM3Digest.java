@@ -2,24 +2,13 @@ package org.bumo.encryption.utils.hash;
 
 public class SM3Digest
 {
-	/** SM3值的长度 */
 	private static final int BYTE_LENGTH = 32;
-	
-	/** SM3分组长度 */
 	private static final int BLOCK_LENGTH = 64;
-	
-	/** 缓冲区长度 */
 	private static final int BUFFER_LENGTH = BLOCK_LENGTH * 1;
-	
-	/** 缓冲区 */
 	private byte[] xBuf = new byte[BUFFER_LENGTH];
-	
-	/** 缓冲区偏移量 */
 	private int xBufOff;
 	
-	/** 初始向量 */
 	private byte[] V = SM3.iv.clone();
-	
 	private int cntBlock = 0;
 
 	public SM3Digest() {
@@ -32,13 +21,6 @@ public class SM3Digest
 		System.arraycopy(t.V, 0, this.V, 0, t.V.length);
 	}
 	
-	/**
-	 * SM3结果输出
-	 * 
-	 * @param out 保存SM3结构的缓冲区
-	 * @param outOff 缓冲区偏移量
-	 * @return
-	 */
 	public int doFinal(byte[] out, int outOff) 
 	{
 		byte[] tmp = doFinal();
@@ -53,16 +35,6 @@ public class SM3Digest
 		V = SM3.iv.clone();
 	}
 
-	/**
-	 * 明文输入
-	 * 
-	 * @param in
-	 *            明文输入缓冲区
-	 * @param inOff
-	 *            缓冲区偏移量
-	 * @param len
-	 *            明文长度
-	 */
 	public void update(byte[] in, int inOff, int len)
 	{
 		int partLen = BUFFER_LENGTH - xBufOff;
@@ -138,15 +110,4 @@ public class SM3Digest
 		
 		return sm3Digest.doFinal();
 	}
-	
-/*	public static void main(String[] args) 
-	{
-		byte[] md = new byte[32];
-		byte[] msg1 = "ererfeiisgod".getBytes();
-		SM3Digest sm3 = new SM3Digest();
-		sm3.update(msg1, 0, msg1.length);
-		sm3.doFinal(md, 0);
-		String s = new String(cn.bubi.sm2.Sm2.bytesToHex(md));
-		System.out.println(s.toUpperCase());
-	}*/
 }

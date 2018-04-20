@@ -167,17 +167,17 @@ public class Base58 {
 		return range;
 	}
 	/**
-	 * 字符串转成base58�?
-	 * @param srcStr 原字符串
-	 * @return
+	 * string to base58
+	 * @param srcStr Source string
+	 * @return Base58 string
 	 */
 	public static String str2Base58(String srcStr) throws UnsupportedEncodingException{
     	return Base58.encode(srcStr.getBytes("utf-8"));
     }
 	/**
-	 * base58串转成字符串
-	 * @param srcStr base58�?
-	 * @return
+	 * base58 to string
+	 * @param srcStr Base58 string
+	 * @return Source string
 	 */
     public static String base582Str(String base58Str) throws UnsupportedEncodingException{
     	return new String (Base58.decode(base58Str));

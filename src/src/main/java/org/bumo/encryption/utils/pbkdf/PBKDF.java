@@ -11,7 +11,7 @@ import static java.lang.System.arraycopy;
  * An implementation of the Password-Based Key Derivation Function as specified
  * in RFC 2898.
  *
- * @author  Will Glozer
+ * @author  bumo
  */
 public class PBKDF {
     /**

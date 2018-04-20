@@ -32,7 +32,6 @@ public class HttpKit {
     public static boolean enableSSL = false;
 
     /**
-     * 鍙戦�丟et璇锋眰
      * @param url
      * @return
      * @throws NoSuchProviderException 
@@ -45,14 +44,11 @@ public class HttpKit {
         TrustManager[] tm = { new MyX509TrustManager() };  
         SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");  
         sslContext.init(null, tm, new java.security.SecureRandom());  
-        // 浠庝笂杩癝SLContext瀵硅薄涓緱鍒癝SLSocketFactory瀵硅薄  
         SSLSocketFactory ssf = sslContext.getSocketFactory();
         
         URL urlGet = new URL(url);
         HttpsURLConnection http = (HttpsURLConnection) urlGet.openConnection();
-        // 杩炴帴瓒呮椂
         http.setConnectTimeout(25000);
-        // 璇诲彇瓒呮椂 --鏈嶅姟鍣ㄥ搷搴旀瘮杈冩參锛屽澶ф椂闂�
         http.setReadTimeout(25000);
         http.setRequestMethod("GET");
         http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
@@ -71,14 +67,12 @@ public class HttpKit {
         }
         in.close();
         if (http != null) {
-            // 鍏抽棴杩炴帴
             http.disconnect();
         }
         return bufferRes.toString();
     }
     
     /**
-     * 鍙戦�丟et璇锋眰
      * @param url
      * @return
      * @throws NoSuchProviderException 
@@ -93,9 +87,7 @@ public class HttpKit {
     		StringBuffer bufferRes = null;
             URL urlGet = new URL(url);
             HttpURLConnection http = (HttpURLConnection) urlGet.openConnection();
-            // 杩炴帴瓒呮椂
             http.setConnectTimeout(25000);
-            // 璇诲彇瓒呮椂 --鏈嶅姟鍣ㄥ搷搴旀瘮杈冩參锛屽澶ф椂闂�
             http.setReadTimeout(25000);
             http.setRequestMethod("GET");
             http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
@@ -112,7 +104,6 @@ public class HttpKit {
             }
             in.close();
             if (http != null) {
-                // 鍏抽棴杩炴帴
                 http.disconnect();
             }
             return bufferRes.toString();
@@ -120,7 +111,6 @@ public class HttpKit {
     }
 
     /**
-     *  鍙戦�丟et璇锋眰
      * @param url
      * @param params
      * @return
@@ -134,7 +124,6 @@ public class HttpKit {
     }
 
     /**
-     *  鍙戦�丳ost璇锋眰
      * @param url
      * @param params
      * @return
@@ -148,14 +137,11 @@ public class HttpKit {
         TrustManager[] tm = { new MyX509TrustManager() };
         SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
         sslContext.init(null, tm, new java.security.SecureRandom());
-        // 浠庝笂杩癝SLContext瀵硅薄涓緱鍒癝SLSocketFactory瀵硅薄  
         SSLSocketFactory ssf = sslContext.getSocketFactory();
 
         URL urlGet = new URL(url);
         HttpsURLConnection http = (HttpsURLConnection) urlGet.openConnection();
-        // 杩炴帴瓒呮椂
         http.setConnectTimeout(50000);
-        // 璇诲彇瓒呮椂 --鏈嶅姟鍣ㄥ搷搴旀瘮杈冩參锛屽澶ф椂闂�
         http.setReadTimeout(50000);
         http.setRequestMethod("POST");
         http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
@@ -179,17 +165,15 @@ public class HttpKit {
         }
         in.close();
         if (http != null) {
-            // 鍏抽棴杩炴帴
             http.disconnect();
         }
         return bufferRes.toString();
     }
     
     /**
-     *  鍙戦�丳ost璇锋眰
-     * @param url 璇锋眰鍦板潃
-     * @param params 璇锋眰鍙傛暟
-     * @param https 鏄惁鍚姩https
+     * @param url
+     * @param params
+     * @param https
      * @return
      * @throws IOException 
      * @throws NoSuchProviderException 
@@ -203,9 +187,7 @@ public class HttpKit {
     		StringBuffer bufferRes = null;
 	        URL urlGet = new URL(url);
 	        HttpURLConnection http = (HttpURLConnection) urlGet.openConnection();
-	        // 杩炴帴瓒呮椂
 	        http.setConnectTimeout(50000);
-	        // 璇诲彇瓒呮椂 --鏈嶅姟鍣ㄥ搷搴旀瘮杈冩參锛屽澶ф椂闂�
 	        http.setReadTimeout(50000);
 	        http.setRequestMethod("POST");
 	        http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
@@ -227,7 +209,6 @@ public class HttpKit {
 	        }
 	        in.close();
 	        if (http != null) {
-	            // 鍏抽棴杩炴帴
 	            http.disconnect();
 	        }
 	        return bufferRes.toString();
@@ -235,7 +216,6 @@ public class HttpKit {
     }
 
     /**
-     * 鏋勯�爑rl
      * @param url
      * @param params
      * @return
@@ -273,27 +253,17 @@ public class HttpKit {
     
     public static String buildQR(String url,String actionName,Integer sceneId) throws KeyManagementException, NoSuchAlgorithmException, NoSuchProviderException, IOException{
     	String params = "";
-    	if("QR_SCENE".equals(actionName)){//涓存椂鏁板瓧鍙傛暟鍊�
+    	if("QR_SCENE".equals(actionName)){
     		params = "{\"expire_seconds\": 1800, \"action_name\": \"QR_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": "+sceneId+"}}}";
-    	}else if("QR_LIMIT_SCENE".equals(actionName)){//姘镐箙鏁板瓧鍙傛暟鍊�
+    	}else if("QR_LIMIT_SCENE".equals(actionName)){
     		params = "{\"expire_seconds\": 1800, \"action_name\": \"QR_LIMIT_SCENE\", \"action_info\": {\"scene\": {\"scene_id\": "+sceneId+"}}}";
-    	}else if("QR_LIMIT_STR_SCENE".equals(actionName)){//姘镐箙鐨勫瓧绗︿覆鍙傛暟鍊�
+    	}else if("QR_LIMIT_STR_SCENE".equals(actionName)){
     		params = "{\"expire_seconds\": 1800, \"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \""+sceneId+"\"}}}";
     	}
     	return HttpKit.post(url, params);
     }
-    
-    public static void main(String[] args) throws Exception {
-//    	String fname = "dsasdas.mp4";
-//    	String s = fname.substring(0, fname.lastIndexOf("."));
-//    	String f = fname.substring(s.length()+1);
-//		System.out.println(f);
-	}
 }
 
-/**
- * 璇佷功绠＄悊
- */
 class MyX509TrustManager implements X509TrustManager {
 
     public X509Certificate[] getAcceptedIssuers() {

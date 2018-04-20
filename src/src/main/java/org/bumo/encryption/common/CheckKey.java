@@ -10,22 +10,19 @@ import cfca.sadk.org.bouncycastle.util.Arrays;
 
 public class CheckKey {
 	/**
-	 * 验证签名函数
-	 * @param msg 消息内容
-	 * @param pkey 公钥字符串
-	 * @param sig 签名
-	 * @return
-	 * @throws Exception 
+	 * @param type KeyType.ED25519 or KeyType.ECCSM2
+	 * @param key Private key or public key
+	 * @return true or false
 	 */
 	public static boolean CheckSum(KeyType type, byte[] key) {
 		return checkKey(type, key);
 	}
 	
 	/**
-	 * 哈希
-	 * @param type 签名类型
-	 * @param data 待哈希数据
-	 * @return 哈希后的数据
+	 * get hash
+	 * @param type KeyType.ED25519 or KeyType.ECCSM2
+	 * @param data Data before hash
+	 * @return data after hash
 	 */
 	public static byte[] CalHash(KeyType type, byte[] data) {
 		byte[] result = null;
