@@ -1,4 +1,4 @@
-package org.bumo.encryption.utils;
+package org.bumo.encryption.utils.hash;
 
 public class SM3Digest
 {

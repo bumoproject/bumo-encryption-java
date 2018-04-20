@@ -2,9 +2,9 @@ package org.bumo.encryption.example;
 
 import org.bumo.encryption.key.PrivateKey;
 import org.bumo.encryption.key.PublicKey;
-import org.bumo.encryption.utils.HexFormat;
-import org.bumo.encryption.utils.HttpKit;
-import org.bumo.encryption.utils.KeyType;
+import org.bumo.encryption.model.KeyType;
+import org.bumo.encryption.utils.hex.HexFormat;
+import org.bumo.encryption.utils.http.HttpKit;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -398,8 +398,8 @@ public class TestEncryption {
 			String src = "test";
 			byte[] sign = priKey2.sign(src.getBytes());
 			byte[] sign_static = PrivateKey.sign(src.getBytes(),priKey.getEncPrivateKey());
-			System.out.println("signature: " + org.bumo.encryption.utils.HexFormat.byteToHex(sign));
-			System.out.println("static signature: " + org.bumo.encryption.utils.HexFormat.byteToHex(sign_static));
+			System.out.println("signature: " + org.bumo.encryption.utils.hex.HexFormat.byteToHex(sign));
+			System.out.println("static signature: " + org.bumo.encryption.utils.hex.HexFormat.byteToHex(sign_static));
 			System.out.println("verify: " + PublicKey.verify(src.getBytes(), sign, priKey.getEncPublicKey()));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -425,8 +425,8 @@ public class TestEncryption {
 			String src = "test";
 			byte[] sign = bumoKey2.sign(src.getBytes());
 			byte[] sign_static = PrivateKey.sign(src.getBytes(),bumoKey.getEncPrivateKey());
-			System.out.println("signature: " + org.bumo.encryption.utils.HexFormat.byteToHex(sign));
-			System.out.println("static signature: " + org.bumo.encryption.utils.HexFormat.byteToHex(sign_static));
+			System.out.println("signature: " + org.bumo.encryption.utils.hex.HexFormat.byteToHex(sign));
+			System.out.println("static signature: " + org.bumo.encryption.utils.hex.HexFormat.byteToHex(sign_static));
 			System.out.println("verify: " + bumoKey2.getPublicKey().verify(src.getBytes(), sign));
 			System.out.println("static verify: " + PublicKey.verify(src.getBytes(), sign, bumoKey.getEncPublicKey()));
 		} catch (Exception e) {

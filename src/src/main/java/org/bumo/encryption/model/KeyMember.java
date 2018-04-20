@@ -1,4 +1,4 @@
-package org.bumo.encryption.utils;
+package org.bumo.encryption.model;
 
 public class KeyMember {
 	private byte[] RawSKey = null;

@@ -1,11 +1,11 @@
-package org.bumo.encryption.utils;
+package org.bumo.encryption.common;
 
 import cfca.sadk.algorithm.sm2.SM2PublicKey;
 import cfca.sadk.algorithm.util.BigIntegerUtil;
 import cfca.sadk.org.bouncycastle.asn1.ASN1Integer;
 import cfca.sadk.org.bouncycastle.asn1.ASN1Sequence;
 
-public class Common {
+public class Sadk {
 	public static byte[] getSM2PublicKey(SM2PublicKey pubKey) {
 		byte[] raw_pkey = new byte[65];
 		byte[] x = pubKey.getPubX();

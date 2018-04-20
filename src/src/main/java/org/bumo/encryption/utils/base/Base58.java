@@ -1,4 +1,4 @@
-package org.bumo.encryption.utils;
+package org.bumo.encryption.utils.base;
 
 import java.io.UnsupportedEncodingException;
 

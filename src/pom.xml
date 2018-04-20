@@ -3,12 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-        <groupId>org.bumo.encryption</groupId>
+        <groupId>org.bumo</groupId>
 		<artifactId>bumo-encryption-java</artifactId>
 		<version>1.0.0</version>
     </parent>
 	
-	<groupId>org.bumo</groupId>
 	<artifactId>bumo-encryption</artifactId>
 	<packaging>jar</packaging>
 	<dependencies>

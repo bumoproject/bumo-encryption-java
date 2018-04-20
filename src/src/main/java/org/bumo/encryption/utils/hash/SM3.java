@@ -1,4 +1,6 @@
-package org.bumo.encryption.utils;
+package org.bumo.encryption.utils.hash;
+
+import org.bumo.encryption.utils.hex.HexFormat;
 
 public class SM3 
 {

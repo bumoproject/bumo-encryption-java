@@ -3,12 +3,12 @@ package org.bumo.encryption.key;
 import java.security.MessageDigest;
 import java.security.Signature;
 
-import org.bumo.encryption.utils.Base58;
-import org.bumo.encryption.utils.CheckKey;
-import org.bumo.encryption.utils.Common;
-import org.bumo.encryption.utils.HexFormat;
-import org.bumo.encryption.utils.KeyMember;
-import org.bumo.encryption.utils.KeyType;
+import org.bumo.encryption.common.CheckKey;
+import org.bumo.encryption.common.Sadk;
+import org.bumo.encryption.model.KeyMember;
+import org.bumo.encryption.model.KeyType;
+import org.bumo.encryption.utils.base.Base58;
+import org.bumo.encryption.utils.hex.HexFormat;
 
 import cfca.sadk.algorithm.common.Mechanism;
 import cfca.sadk.algorithm.sm2.SM2PublicKey;
@@ -202,7 +202,7 @@ public class PublicKey {
 			Session session = JCrypto.getInstance().openSession(deviceName);
 			final cfca.sadk.util.Signature signature = new cfca.sadk.util.Signature();
 			
-			SM2PublicKey sm2PublicKey  = Common.getSM2PublicKey(member.getRawPKey());
+			SM2PublicKey sm2PublicKey  = Sadk.getSM2PublicKey(member.getRawPKey());
 			final byte[] userId = "1234567812345678".getBytes("UTF8");
 			final String signAlg = Mechanism.SM3_SM2;
 	        // 

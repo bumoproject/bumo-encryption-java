@@ -1,7 +1,10 @@
-package org.bumo.encryption.utils;
+package org.bumo.encryption.common;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import org.bumo.encryption.model.KeyType;
+import org.bumo.encryption.utils.hash.SM3Digest;
 
 import cfca.sadk.org.bouncycastle.util.Arrays;
 

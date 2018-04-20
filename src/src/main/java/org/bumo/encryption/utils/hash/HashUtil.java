@@ -1,4 +1,4 @@
-package org.bumo.encryption.utils;
+package org.bumo.encryption.utils.hash;
 
 import cfca.sadk.algorithm.common.Mechanism;
 
@@ -21,6 +21,6 @@ public class HashUtil {
 		else {
 			throw new Exception("type is invalid");
 		}
-		return org.bumo.encryption.utils.HexFormat.byteToHex(hash).toLowerCase();
+		return org.bumo.encryption.utils.hex.HexFormat.byteToHex(hash).toLowerCase();
 	}
 }
