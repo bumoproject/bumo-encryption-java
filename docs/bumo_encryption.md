@@ -308,17 +308,11 @@ Boolean verifyResult = PublicKey.verify(src.getBytes(), sign, publicKey);
 |变量|类型|描述
 |:--- | --- | --- 
 | src | byte[] | 待计算的字节数组，即交易的序列化字节数组
-| type | Integer | hash类型,0是sha-256,1是sm3
 
 例如
 ```java
-String url="127.0.0.1:19333";
-String getHello = url + "/hello";
-String hello = HttpKit.post(getHello, "");
-JSONObject ho = JSONObject.parseObject(hello);
-Integer hash_type = ho.containsKey("hash_type") ? ho.getInteger("hash_type") : 0;
 Transaction.Builder tran = Transaction.newBuilder();
-String hash = HashUtil.GenerateHashHex(tran.build().toByteArray(), hash_type);
+String hash = HashUtil.GenerateHashHex(tran.build().toByteArray());
 ```
 
 若要获取bumo底层的hash类型，需要访问http的hello接口，会返回hash类型
