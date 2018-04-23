@@ -23,13 +23,14 @@
         - [转移bu资产](#转移bu资产)
 
 ## 用途
-用于生成公私钥和地址，以及签名，和验签，只支持ED25519和SM2，默认是ED25519。
+用于生成公私钥和地址，以及签名，和验签，只支持ED25519。
 
 ## 包引用
 所依赖的jar包在jar文件夹中寻找，依赖的jar包如下：
 
-1. bumo-encryption-1.0.0.jar:用于生成公私钥和地址，以及签名，和验签，详细请看下面介绍
-2. sadk-3.2.3.0.RELEASE.jar:用于SM2的签名操作
+1. bcprov-jdk15on-1.52.jar
+2. eddsa-0.1.0.jar
+3. fastjson-1.2.32.jar
 
 ## 私钥
 ### 构造对象
@@ -64,7 +65,7 @@ PrivateKey privateKey = new PrivateKey(encPrivateKey);
 
 例如：
 ```java
-PrivateKey privateKey = new PrivateKey(KeyType.ECCSM2);
+PrivateKey privateKey = new PrivateKey(KeyType.ED25519);
 String encPrivateKey = privateKey.getEncPrivateKey();
 ```
 
@@ -83,7 +84,7 @@ String encPrivateKey = privateKey.getEncPrivateKey();
 
 例如：
 ```java
-PrivateKey privateKey = new PrivateKey(KeyType.ECCSM2);
+PrivateKey privateKey = new PrivateKey(KeyType.ED25519);
 String encPublicKey = privateKey.getEncPublicKey();
 ```
 
