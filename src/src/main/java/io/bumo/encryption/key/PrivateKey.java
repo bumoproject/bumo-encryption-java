@@ -4,16 +4,7 @@ import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.Signature;
 
-import cfca.sadk.algorithm.common.Mechanism;
-import cfca.sadk.algorithm.sm2.SM2PrivateKey;
-import cfca.sadk.algorithm.sm2.SM2PublicKey;
-import cfca.sadk.lib.crypto.JCrypto;
-import cfca.sadk.lib.crypto.Session;
-import cfca.sadk.util.Base64;
-import cfca.sadk.util.HashUtil;
-import cfca.sadk.util.KeyUtil;
 import io.bumo.encryption.common.CheckKey;
-import io.bumo.encryption.common.Sadk;
 import io.bumo.encryption.model.KeyMember;
 import io.bumo.encryption.model.KeyType;
 import io.bumo.encryption.utils.base.Base58;
@@ -53,18 +44,6 @@ public class PrivateKey {
 			EdDSAPublicKey pubKey = (EdDSAPublicKey) keyPair.getPublic();
 			keyMember.setRawSKey(priKey.getSeed());
 			publicKey.setRawPublicKey(pubKey.getAbyte());
-			break;
-		}
-		case ECCSM2: {
-			final String deviceName = JCrypto.JSOFT_LIB;
-	        JCrypto.getInstance().initialize(deviceName, null);
-	        Session session = JCrypto.getInstance().openSession(deviceName);
-	        
-	        KeyPair keypair = KeyUtil.generateKeyPair(new Mechanism(Mechanism.SM2), 256, session);
-	        SM2PublicKey pubKey = (SM2PublicKey)keypair.getPublic();
-	        SM2PrivateKey priKey = (SM2PrivateKey)keypair.getPrivate();
-	        keyMember.setRawSKey(priKey.getD_Bytes());
-	        publicKey.setRawPublicKey(Sadk.getSM2PublicKey(pubKey));
 			break;
 		}
 		default:
@@ -245,12 +224,6 @@ public class PrivateKey {
 	        rawPKey = pDsaPublicKey.getAbyte();
 			break;
 		}
-		case ECCSM2: {
-			SM2PrivateKey sm2PrivateKey = new SM2PrivateKey(member.getRawSKey());
-			SM2PublicKey sm2PublicKey =  sm2PrivateKey.getSM2PublicKey();
-			rawPKey = Sadk.getSM2PublicKey(sm2PublicKey);
-			break;
-		}
 		default:
 			throw new Exception("type does not exist");
 		}
@@ -314,23 +287,6 @@ public class PrivateKey {
 			sgr.update(msg);
 			
 			signMsg = sgr.sign();
-			break;
-		}
-			
-			
-		case ECCSM2: {
-			final String deviceName = JCrypto.JSOFT_LIB;
-			JCrypto.getInstance().initialize(deviceName, null);
-			Session session = JCrypto.getInstance().openSession(deviceName);
-			final cfca.sadk.util.Signature signature = new cfca.sadk.util.Signature();
-			
-			SM2PrivateKey sm2PrivateKey = KeyUtil.getSM2PrivateKey(member.getRawSKey(), null, null) ;
-			SM2PublicKey sm2PublicKey  = Sadk.getSM2PublicKey(member.getRawPKey());
-			final byte[] userId = "1234567812345678".getBytes("UTF8");
-			final String signAlg = Mechanism.SM3_SM2;
-	        // 
-	        byte[] hash = HashUtil.SM2HashMessageByBCWithZValue(userId, msg, sm2PublicKey.getPubXByInt(), sm2PublicKey.getPubYByInt());
-	        signMsg = Sadk.ASN1toRS(Base64.decode(signature.p1SignByHash(signAlg, hash, sm2PrivateKey, session)));
 			break;
 		}
 		default:

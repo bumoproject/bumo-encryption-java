@@ -2,8 +2,8 @@ package io.bumo.encryption.common;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
-import cfca.sadk.org.bouncycastle.util.Arrays;
 import io.bumo.encryption.model.KeyType;
 import io.bumo.encryption.utils.hash.SM3Digest;
 
@@ -55,7 +55,7 @@ public class CheckKey {
 		
 		byte[] HashSum = new byte[4];
 		System.arraycopy(hash2, 0, HashSum, 0, 4);
-		if (!Arrays.areEqual(HashSum, checkSum)) {
+		if (!Arrays.equals(HashSum, checkSum)) {
 			SumIsRight = false;
 		}
 		return SumIsRight;

@@ -21,12 +21,7 @@ public class TestEncryption {
 	BumoAccount srcAccount = new BumoAccount();
 	public static void main(String[] args) throws IllegalArgumentException, Exception {
 		// test signature and verify
-		System.out.println("================ test b58 ed25519 ==================");
 		test_ED25519();
-		System.out.println();
-		
-		System.out.println("\n\n================ test b58 eccsm2 ==================");
-		test_ECCSM2();
 		System.out.println();
 		
 		// test transaction
@@ -401,34 +396,6 @@ public class TestEncryption {
 			System.out.println("signature: " + io.bumo.encryption.utils.hex.HexFormat.byteToHex(sign));
 			System.out.println("static signature: " + io.bumo.encryption.utils.hex.HexFormat.byteToHex(sign_static));
 			System.out.println("verify: " + PublicKey.verify(src.getBytes(), sign, priKey.getEncPublicKey()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void test_ECCSM2() {
-		try {
-			PrivateKey bumoKey = new PrivateKey(KeyType.ECCSM2);
-			System.out.println("bubuKey1 private key: " + bumoKey.getEncPrivateKey());
-			System.out.println("bubuKey1 public key: " + bumoKey.getEncPublicKey());
-			System.out.println("bubuKey1 address: " + bumoKey.getEncAddress());
-			System.out.println("bubuKey1 static public key: " + PrivateKey.getEncPublicKey(bumoKey.getEncPrivateKey()));
-			System.out.println("bubuKey1 static address: " + PrivateKey.getEncAddress(bumoKey.getEncPublicKey()));
-			
-			PrivateKey bumoKey2 = new PrivateKey(bumoKey.getEncPrivateKey());
-			System.out.println("bubuKey2 private key: " + bumoKey2.getEncPrivateKey());
-			System.out.println("bubuKey2 public key: " + bumoKey2.getEncPublicKey());
-			System.out.println("bubuKey2 address: " + bumoKey2.getEncAddress());
-			
-			Boolean verifyResult = false;
-			System.out.println(verifyResult);
-			String src = "test";
-			byte[] sign = bumoKey2.sign(src.getBytes());
-			byte[] sign_static = PrivateKey.sign(src.getBytes(),bumoKey.getEncPrivateKey());
-			System.out.println("signature: " + io.bumo.encryption.utils.hex.HexFormat.byteToHex(sign));
-			System.out.println("static signature: " + io.bumo.encryption.utils.hex.HexFormat.byteToHex(sign_static));
-			System.out.println("verify: " + bumoKey2.getPublicKey().verify(src.getBytes(), sign));
-			System.out.println("static verify: " + PublicKey.verify(src.getBytes(), sign, bumoKey.getEncPublicKey()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

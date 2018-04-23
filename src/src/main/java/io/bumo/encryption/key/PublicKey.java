@@ -3,14 +3,7 @@ package io.bumo.encryption.key;
 import java.security.MessageDigest;
 import java.security.Signature;
 
-import cfca.sadk.algorithm.common.Mechanism;
-import cfca.sadk.algorithm.sm2.SM2PublicKey;
-import cfca.sadk.lib.crypto.JCrypto;
-import cfca.sadk.lib.crypto.Session;
-import cfca.sadk.util.Base64;
-import cfca.sadk.util.HashUtil;
 import io.bumo.encryption.common.CheckKey;
-import io.bumo.encryption.common.Sadk;
 import io.bumo.encryption.model.KeyMember;
 import io.bumo.encryption.model.KeyType;
 import io.bumo.encryption.utils.base.Base58;
@@ -193,20 +186,6 @@ public class PublicKey {
 			sgr.initVerify(vKey);
 			sgr.update(msg);
 			verifySuccess = sgr.verify(sign);
-			break;
-		}
-		case ECCSM2: { // SM2
-			final String deviceName = JCrypto.JSOFT_LIB;
-			JCrypto.getInstance().initialize(deviceName, null);
-			Session session = JCrypto.getInstance().openSession(deviceName);
-			final cfca.sadk.util.Signature signature = new cfca.sadk.util.Signature();
-			
-			SM2PublicKey sm2PublicKey  = Sadk.getSM2PublicKey(member.getRawPKey());
-			final byte[] userId = "1234567812345678".getBytes("UTF8");
-			final String signAlg = Mechanism.SM3_SM2;
-	        // 
-	        byte[] hash = HashUtil.SM2HashMessageByBCWithZValue(userId, msg, sm2PublicKey.getPubXByInt(), sm2PublicKey.getPubYByInt());
-	        verifySuccess = signature.p1VerifyByHash(signAlg, hash, Base64.encode(sign), sm2PublicKey, session);
 			break;
 		}
 		default:
