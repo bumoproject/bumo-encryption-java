@@ -1,6 +1,6 @@
-# __BUMO JAVA ENCRYPTIOIN使用文档__
+# BUMO JAVA ENCRYPTIOIN使用文档
 
-- [BUMO JAVA ENCRYPTIOIN使用文档](#__BUMO JAVA ENCRYPTIOIN使用文档__)
+- [BUMO JAVA ENCRYPTIOIN使用文档](#BUMOJAVAENCRYPTIOIN使用文档)
     - [用途](#用途)
     - [包引用](#包引用)
     - [私钥](#私钥)

@@ -1,7 +1,7 @@
 # Bumo Java encryption
 
 ## 简介
-Java开发人员可以轻松通过Bumo Java Encryption操作Bumo区块链。您可以在几分钟内通过Maven或下载jar包的方式完成SDK的安装。
+Java开发人员可以轻松通过Bumo Java Encryption实现Bumo区块链的加密模块。您可以在几分钟内通过Maven或下载jar包的方式完成安装。
 
 1. [docs](/docs) 是 Bumo Java Encryption 的使用文档。
 2. [example](/example) 是一个基于maven的项目示例。
@@ -41,7 +41,7 @@ maven 远程仓库
 </dependency>
 ```
 #### 方式二：在项目中导入JAR包
-1. 下载Bumo Java SDK开发包
+1. 下载Bumo Java Encryption开发包
 2. 解压该开发包
 3. 将bumo-encryption-{version}.jar以及附带的libs里的jar导入到您的项目中
 

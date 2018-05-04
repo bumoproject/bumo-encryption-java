@@ -140,7 +140,7 @@ public class PublicKey {
 			throw new Exception("public key (" + bPkey + ") is invalid, please check");
 		}
 		
-		if (buffPKey[1] > 4 || buffPKey[1] < 1) {
+		if (buffPKey[1] != 1) {
 			throw new Exception("public key (" + bPkey + ") is invalid, please check");
 		}
 		type = KeyType.values()[buffPKey[1] - 1];

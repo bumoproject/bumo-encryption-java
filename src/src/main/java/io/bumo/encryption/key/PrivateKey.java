@@ -197,7 +197,7 @@ public class PrivateKey {
 			throw new Exception("private key (" + bSkey + ") is invalid");
 		}
 		
-		if (skeyTmp[3] > 4 || skeyTmp[3] < 1) {
+		if (skeyTmp[3] != 1) {
 			throw new Exception("private key (" + bSkey + ") is invalid");
 		}
 		KeyType type = KeyType.values()[skeyTmp[3] - 1];
