@@ -10,7 +10,7 @@ import io.bumo.encryption.model.KeyType;
 import io.bumo.encryption.utils.hex.HexFormat;
 import io.bumo.encryption.utils.http.HttpKit;
 
-public class TestEncryption {
+public class TestKey {
 	
 	class BumoAccount {
 		public String address;
@@ -53,7 +53,7 @@ public class TestEncryption {
 		
 		// B pay 5000 CNY to A
 		System.out.println("D pay B CNY 5000");
-		TestPayment(url, bumoKey_B.getEncAddress(), bumoKey_B.getEncAddress(), bumoKey_B.getEncPrivateKey(), 
+		TestPayAsset(url, bumoKey_B.getEncAddress(), bumoKey_B.getEncAddress(), bumoKey_B.getEncPrivateKey(),
 				bumoKey_B.getEncPublicKey(), bumoKey_A.getEncAddress(), "CNY", 5000);
 		
 		// A pay 50000 BU to B
@@ -145,9 +145,8 @@ public class TestEncryption {
 		return bumokey_new;
 	}
 	
-	public static PrivateKey TestIssueAsset(String url, String address, String privateKey, String publicKey, 
+	public static void TestIssueAsset(String url, String address, String privateKey, String publicKey,
 			String code, long amount) {
-		PrivateKey bumokey_new = null;
 		try {
 			// getAccount
 			String getAccount = url + "/getAccount?address=" + address;
@@ -183,7 +182,7 @@ public class TestEncryption {
 				String hash = blobResult.getString("hash");
 				String desc = transactionBlob.getString("error_desc");
 				System.out.println("issue asset blob (" + hash + ") error description: " + desc);
-				return null;
+				return;
 			}
 			String blob_hex = blobResult.getString("transaction_blob");
 			
@@ -209,19 +208,15 @@ public class TestEncryption {
 			if (transResult.getJSONObject(0).getLongValue("error_code") != 0) {
 				String desc = transResult.getJSONObject(0).getString("error_desc");
 				System.out.println("issue asset transaction(" + hash + ") error description: " + desc);
-				return null;
 			}
 			System.out.println("issue asset transaction hash (" + hash + ")");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return bumokey_new;
 	}
 	
-	public static PrivateKey TestPayment(String url, String issueAddress, String srcAddress, String srcPrivate, String srcPublic, 
-			String destAddress, String code, long amount) {
-		PrivateKey bumokey_new = null;
+	public static void TestPayAsset(String url, String issueAddress, String srcAddress, String srcPrivate, String srcPublic,
+									String destAddress, String code, long amount) {
 		try {
 			// getAccount
 			String getAccount = url + "/getAccount?address=" + srcAddress;
@@ -241,8 +236,8 @@ public class TestEncryption {
 			JSONArray operations = new JSONArray();
 			JSONObject operation = new JSONObject();
 			operation.put("type", 3);
-			JSONObject payment = new JSONObject();
-			payment.put("dest_address", destAddress);
+			JSONObject payAsset = new JSONObject();
+			payAsset.put("dest_address", destAddress);
 			JSONObject asset = new JSONObject();
 			JSONObject key = new JSONObject();
 			key.put("issuer", issueAddress);
@@ -251,8 +246,8 @@ public class TestEncryption {
 			
 			asset.put("key", key);
 			asset.put("amount", amount);
-			operation.put("asset", asset);
-			operation.put("payment", payment);
+			payAsset.put("asset", asset);
+			operation.put("pay_asset", payAsset);
 			operations.add(operation);
 			transaction.put("operations", operations);
 			String getTransactionBlob = url + "/getTransactionBlob";
@@ -263,8 +258,8 @@ public class TestEncryption {
 			if (transactionBlob != null && error_code != 0) {
 				String hash = blobResult.getString("hash");
 				String desc = transactionBlob.getString("error_desc");
-				System.out.println("payment blob (" + hash + ") error description: " + desc);
-				return null;
+				System.out.println("payAsset blob (" + hash + ") error description: " + desc);
+				return;
 			}
 			String blob_hex = blobResult.getString("transaction_blob");
 			
@@ -289,20 +284,16 @@ public class TestEncryption {
 			String hash = transResult.getJSONObject(0).getString("hash");
 			if (transResult.getJSONObject(0).getLongValue("error_code") != 0) {
 				String desc = transResult.getJSONObject(0).getString("error_desc");
-				System.out.println("payment transaction(" + hash + ") error description: " + desc);
-				return null;
+				System.out.println("payAsset transaction(" + hash + ") error description: " + desc);
 			}
-			System.out.println("payment transaction hash (" + hash + ")");
+			System.out.println("payAsset transaction hash (" + hash + ")");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return bumokey_new;
 	}
 	
-	public static PrivateKey TestPayCoin(String url, String srcAddress, String srcPrivate, String srcPublic, 
+	public static void TestPayCoin(String url, String srcAddress, String srcPrivate, String srcPublic,
 			String destAddress, long amount) {
-		PrivateKey bumokey_new = null;
 		try {
 			// getAccount
 			String getAccount = url + "/getAccount?address=" + srcAddress;
@@ -338,7 +329,7 @@ public class TestEncryption {
 				String hash = blobResult.getString("hash");
 				String desc = transactionBlob.getString("error_desc");
 				System.out.println("pay coin blob (" + hash + ") error description: " + desc);
-				return null;
+				return;
 			}
 			String blob_hex = blobResult.getString("transaction_blob");
 			
@@ -364,14 +355,11 @@ public class TestEncryption {
 			if (transResult.getJSONObject(0).getLongValue("error_code") != 0) {
 				String desc = transResult.getJSONObject(0).getString("error_desc");
 				System.out.println("pay coin transaction(" + hash + ") error description: " + desc);
-				return null;
 			}
 			System.out.println("pay coin transaction hash (" + hash + ")");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return bumokey_new;
 	}
 	
 	public static void test_ED25519() {

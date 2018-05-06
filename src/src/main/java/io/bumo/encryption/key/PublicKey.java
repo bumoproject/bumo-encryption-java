@@ -17,13 +17,13 @@ import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 public class PublicKey {
 	private KeyMember keyMember = new KeyMember();
 	
-	PublicKey() {
+	public PublicKey() {
 	}
 	
 	/**
 	 * structure with encrytion public key
 	 */
-	PublicKey(String encPublicKey) throws Exception {
+	public PublicKey(String encPublicKey) throws Exception {
 		getPublicKey(encPublicKey, keyMember);
 	}
 	
@@ -128,7 +128,11 @@ public class PublicKey {
 		if (null == bPkey) {
 			throw new Exception("public key cannot be null");
 		}
-		
+
+		if (!HexFormat.isHexString(bPkey)) {
+			throw new Exception("public key (" + bPkey + ") is invalid, please check");
+		}
+
 		KeyType type = null;
 		byte[] buffPKey = HexFormat.hexToByte(bPkey);
 		

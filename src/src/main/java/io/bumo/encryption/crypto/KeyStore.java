@@ -12,19 +12,22 @@ import io.bumo.encryption.utils.scrypt.SCrypt;
 
 public class KeyStore {
 	/**
+	 * @param encPrivateKey this is the encode private key to be stored
 	 * @param password
-	 * @param newEncPrivateKey can be null
-	 * @param keyStore return value
-	 * @return newEncPrivateKey if newEncPrivateKey was null, return a new one, otherwise return it self
+	 * @param n CPU cost parameter, if n is null, the default value is 16384
+	 * @param r Memory cost parameter, if r is null, the default value is 8
+	 * @param p Parallelization parameter, if p is null, the default value is 1
+	 * @return keyStore this is the store of encode private key, cannot be null
+	 * @return encPrivateKey if encPrivateKey was null, return a new one, otherwise return itself
 	 * @throws Exception 
 	 */
-	public static String generateKeyStore(String password, String newEncPrivateKey, JSONObject keyStore) throws Exception {
+	public static String generateKeyStore(String encPrivateKey, String password, Integer n, Integer r, Integer p, JSONObject keyStore) throws Exception {
 		if (keyStore == null) {
 			throw new Exception("keyStore can not be null");
 		}
-		int n = 16384;
-		int r = 8;
-		int p = 1;
+		int N = (n == null ? 16384 : n.intValue());
+		int R = (r == null ? 8 : r.intValue());
+		int P = (p == null ? 1 : p.intValue());
 		int dkLen = 32;
 		
 		byte[] salt = new byte[32];
@@ -35,41 +38,41 @@ public class KeyStore {
 		SecureRandom randomIv = new SecureRandom();
 		randomIv.nextBytes(aesIv);
 		
-		byte[] dk = SCrypt.scrypt(password.getBytes(), salt, n, r, p, dkLen);
+		byte[] dk = SCrypt.scrypt(password.getBytes(), salt, N, R, P, dkLen);
 		
 		String address = "";
-		if (newEncPrivateKey == null || newEncPrivateKey.isEmpty()) {
+		if (encPrivateKey == null || encPrivateKey.isEmpty()) {
 			PrivateKey privateKey = new PrivateKey(KeyType.ED25519);
-			newEncPrivateKey = privateKey.getEncPrivateKey();
+			encPrivateKey = privateKey.getEncPrivateKey();
 			address = privateKey.getEncAddress();
 		}
 		else {
-			PrivateKey privateKey = new PrivateKey(newEncPrivateKey);
+			PrivateKey privateKey = new PrivateKey(encPrivateKey);
 			address = privateKey.getEncAddress();
 		}
-		byte[] cyperText = AesCtr.encrypt(newEncPrivateKey.getBytes(), dk, aesIv);
+		byte[] cyperText = AesCtr.encrypt(encPrivateKey.getBytes(), dk, aesIv);
 		
 		keyStore.put("version", 2);
 		JSONObject scryptParams = new JSONObject();
-		scryptParams.put("n", n);
-		scryptParams.put("r", r);
-		scryptParams.put("p", p);
+		scryptParams.put("n", N);
+		scryptParams.put("r", R);
+		scryptParams.put("p", P);
 		scryptParams.put("salt", HexFormat.byteToHex(salt));
 		keyStore.put("scrypt_params", scryptParams);
 		keyStore.put("aesctr_iv", HexFormat.byteToHex(aesIv));
 		keyStore.put("cypher_text", HexFormat.byteToHex(cyperText));
 		keyStore.put("address", address);
 
-		return newEncPrivateKey;
+		return encPrivateKey;
 	}
 	
 	/**
-	 * @param password
-	 * @param keyStore
-	 * @return encPrivateKey
+	 * @param keyStore the store of encode private key to be decrypted
+	 * @param password the password of the keyStore 
+	 * @return encPrivateKey the encode private key 
 	 * @throws Exception 
 	 */
-	public static String from(String password, JSONObject keyStore) throws Exception {
+	public static String from(JSONObject keyStore, String password) throws Exception {
 		String encPrivateKey = null;
 		if (!keyStore.containsKey("version")) {
 			throw new Exception("keyStore must contain version key");
