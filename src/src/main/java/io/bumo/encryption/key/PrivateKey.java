@@ -32,7 +32,7 @@ public class PrivateKey {
 	
 	/**
 	 * generate key pair
-	 * @param  keyType
+	 * @param  type the type of key
 	 * @throws Exception 
 	 */
 	public PrivateKey(KeyType type) throws Exception {
@@ -84,7 +84,7 @@ public class PrivateKey {
 	
 	/**
 	 * set raw private key
-	 * @param raw private key
+	 * @param rawSKey private key
 	 */
 	public void setRawPrivateKey(byte[] rawSKey) {
 		keyMember.setRawSKey(rawSKey);

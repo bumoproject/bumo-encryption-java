@@ -54,7 +54,7 @@ public class PublicKey {
 	
 	/**
 	 * set key type
-	 * @param KeyType key type
+	 * @param keyType key type
 	 */
 	public void setKeyType(KeyType keyType) {
 		keyMember.setKeyType(keyType);
@@ -64,7 +64,7 @@ public class PublicKey {
 	 * get key type
 	 * @return key type
 	 */
-	public KeyType getKeyType() {
+	private KeyType getKeyType() {
 		return keyMember.getKeyType();
 	}
 	

@@ -30,34 +30,34 @@ public class TestKey {
 		String privateKey = "privbtGQELqNswoyqgnQ9tcfpkuH8P1Q6quvoybqZ9oTVwWhS6Z2hi1B";
 		String publicKey = "b001b6d3120599d19cae7adb6c5e2674ede8629c871cb8b93bd05bb34d203cd974c3f0bc07e5";
 		String address = "buQdBdkvmAhnRrhLp4dmeCc2ft7RNE51c9EK";
-		
+
 		// create A
 		System.out.println("create A: ");
 		PrivateKey bumoKey_A = TestCreateAccount(url, address, privateKey, publicKey, address, privateKey, publicKey, KeyType.ED25519);
 		System.out.println("A account: " + bumoKey_A.getEncAddress());
 		Thread.sleep(5000);
-		
+
 		// A create D
 		System.out.println("create B: ");
 		PrivateKey bumoKey_B = TestCreateAccount(url, address, privateKey, publicKey, address, privateKey, publicKey, KeyType.ED25519);
 		System.out.println("B account: " + bumoKey_B.getEncAddress());
 		Thread.sleep(5000);
-		
+
 		System.out.println();
 		System.out.println();
 		System.out.println("B issue CNY 10000");
 		// B issue CNY 10000
 		TestIssueAsset(url, bumoKey_B.getEncAddress(), bumoKey_B.getEncPrivateKey(), bumoKey_B.getEncPublicKey(), "CNY", 10000);
-		
+
 		Thread.sleep(5000);
-		
+
 		// B pay 5000 CNY to A
 		System.out.println("D pay B CNY 5000");
 		TestPayAsset(url, bumoKey_B.getEncAddress(), bumoKey_B.getEncAddress(), bumoKey_B.getEncPrivateKey(),
 				bumoKey_B.getEncPublicKey(), bumoKey_A.getEncAddress(), "CNY", 5000);
-		
+
 		// A pay 50000 BU to B
-		TestPayCoin(url, bumoKey_A.getEncAddress(), bumoKey_A.getEncPrivateKey() , bumoKey_A.getEncPublicKey(), 
+		TestPayCoin(url, bumoKey_A.getEncAddress(), bumoKey_A.getEncPrivateKey() , bumoKey_A.getEncPublicKey(),
 				bumoKey_B.getEncAddress(), 50000);
 	}
 	
@@ -377,6 +377,9 @@ public class TestKey {
 			System.out.println("bubuKey2 private key: " + priKey2.getEncPrivateKey());
 			System.out.println("bubuKey2 public key: " + priKey2.getEncPublicKey());
 			System.out.println("bubuKey2 address: " + priKey2.getEncAddress());
+
+			PublicKey publicKey = new PublicKey(priKey.getEncPublicKey());
+			System.out.println(publicKey.getEncAddress());
 			
 			String src = "test";
 			byte[] sign = priKey2.sign(src.getBytes());
