@@ -276,7 +276,7 @@ Boolean verifyResult = PublicKey.verify(src.getBytes(), sign, publicKey);
 |:--- | --- | --- 
 | encPrivateKey | String | 待存储的密钥，可为null
 | password | String | 口令
-| n | Integer | CPU消耗参数，可为null
+| n | Integer | CPU消耗参数，可为null
 | r | Integer | 内存消息参数，可为null
 | p | Integer | 并行化参数，可为null
 
@@ -521,7 +521,7 @@ String url = "http://127.0.0.1:36002";
 String privateKey = "privbtGQELqNswoyqgnQ9tcfpkuH8P1Q6quvoybqZ9oTVwWhS6Z2hi1B";
 String publicKey = "b001b6d3120599d19cae7adb6c5e2674ede8629c871cb8b93bd05bb34d203cd974c3f0bc07e5";
 String address = "buQdBdkvmAhnRrhLp4dmeCc2ft7RNE51c9EK";
-TestIssueAsset(url, bumoKey.getEncAddress(), bumoKey.getEncPrivateKey(), bumoKey.getEncPublicKey(), "BUH", 10000);
+TestIssueAsset(url, address, privateKey, publicKey, "BUH", 10000);
 ```
 
 #### 转移资产
@@ -612,7 +612,8 @@ String url = "http://127.0.0.1:36002";
 String privateKey = "privbtGQELqNswoyqgnQ9tcfpkuH8P1Q6quvoybqZ9oTVwWhS6Z2hi1B";
 String publicKey = "b001b6d3120599d19cae7adb6c5e2674ede8629c871cb8b93bd05bb34d203cd974c3f0bc07e5";
 String address = "buQdBdkvmAhnRrhLp4dmeCc2ft7RNE51c9EK";
-TestPayAsset(url, bumoKey.getEncAddress(), bumoKey.getEncAddress(), bumoKey.getEncPrivateKey(), bumoKey.getEncPublicKey(), address, "BUH", 5000);
+String toAddress = "buQgQPcxaPg8jNiBj19DFhKH1ewjkmZsBqj4";
+TestPayAsset(url, address, address, privateKey, publicKey, toAddress, "BUH", 5000);
 ```
 
 #### 转移bu资产
@@ -696,5 +697,6 @@ String url = "http://127.0.0.1:36002";
 String privateKey = "privbtGQELqNswoyqgnQ9tcfpkuH8P1Q6quvoybqZ9oTVwWhS6Z2hi1B";
 String publicKey = "b001b6d3120599d19cae7adb6c5e2674ede8629c871cb8b93bd05bb34d203cd974c3f0bc07e5";
 String address = "buQdBdkvmAhnRrhLp4dmeCc2ft7RNE51c9EK";
-TestPayCoin(url, address, privateKey, publicKey, bumoKey.getEncAddress(), 50000);
+String toAddress = "buQgQPcxaPg8jNiBj19DFhKH1ewjkmZsBqj4";
+TestPayCoin(url, address, privateKey, publicKey, toAddress, 50000);
 ```
