@@ -5,11 +5,14 @@
 - [私钥](#私钥)
 	- [构造对象](#构造对象)
 	- [获取编码后私钥](#获取编码后私钥)
+	- [私钥是否有效](#私钥是否有效)
 	- [获取编码后公钥](#获取编码后公钥)
 	- [签名](#签名)
 - [公钥](#公钥)
 	- [构造对象](#构造对象)
+	- [公钥是否有效](#公钥是否有效)
 	- [获取编码后地址](#获取编码后地址)
+	- [地址是否有效](#地址是否有效)
 	- [验签](#验签)
 - [密钥存储器](#密钥存储器)
 	- [生成密钥存储器](#生成密钥存储器)
@@ -68,6 +71,27 @@ PrivateKey privateKey = new PrivateKey(KeyType.ED25519);
 String encPrivateKey = privateKey.getEncPrivateKey();
 ```
 
+### 私钥是否有效
+#### 静态接口
+方法名：isPrivateKeyValid
+注意：调用此方法不需要构造PrivateKey对象
+
+请求参数：
+|变量|类型|描述
+|:--- | --- | --- 
+| EncPrivateKey | String | 编码的私钥
+
+返回结果：
+|变量|类型|描述
+|:--- | --- | --- 
+| isValid | boolean | 私钥是否有效
+
+例如：
+```java
+String encPrivateKey = "privbtGQELqNswoyqgnQ9tcfpkuH8P1Q6quvoybqZ9oTVwWhS6Z2hi1B";
+boolean isValid = PrivateKey.isPrivateKeyValid(encPrivateKey);
+```
+
 ### 获取编码后公钥
 #### 非静态接口
 方法名：getEncPublicKey
@@ -86,8 +110,6 @@ String encPrivateKey = privateKey.getEncPrivateKey();
 PrivateKey privateKey = new PrivateKey(KeyType.ED25519);
 String encPublicKey = privateKey.getEncPublicKey();
 ```
-
-# BUMO JAVA ENCRYPTIOIN使用文档
 
 #### 静态接口
 方法名：getEncPublicKey
@@ -170,6 +192,27 @@ String publicKey = "b0014085888f15e6fdae80827f5ec129f7e9323cf60732e7f8259fa2d68a
 PublicKey publicKey = new PublicKey(encPublicKey);
 ```
 
+### 公钥是否有效
+#### 静态接口
+方法名: isPublicKeyValid
+注意：调用此方法不需要构造PublicKey对象
+
+请求参数:
+|变量|类型|描述
+|:--- | --- | --- 
+| EncPublicKey | String | 编码的公钥
+
+返回结果：
+|变量|类型|描述
+|:--- | --- | --- 
+| isValid | boolean | 公钥是否有效
+
+例如：
+```java
+String encPublicKey = "b0014085888f15e6fdae80827f5ec129f7e9323cf60732e7f8259fa2d68a282e8eed51fad13f";
+boolean isValid = PublicKey.isPublicKeyValid(encPublicKey);
+```
+
 ### 获取编码后地址
 #### 非静态接口
 方法名：getEncAddress
@@ -210,6 +253,27 @@ String encAddress = publicKey.getEncAddress();
 ```java
 String publicKey = "b0014085888f15e6fdae80827f5ec129f7e9323cf60732e7f8259fa2d68a282e8eed51fad13f";
 String encAddress = PublicKey.getEncAddress(encPublicKey);
+```
+
+### 地址是否有效
+#### 静态接口
+方法名: isAddressValid
+注意：调用此方法不需要构造PublicKey对象
+
+请求参数:
+|变量|类型|描述
+|:--- | --- | --- 
+| EncAddress | String | 编码的地址
+
+返回结果：
+|变量|类型|描述
+|:--- | --- | --- 
+| isValid | boolean | 地址是否有效
+
+例如：
+```java
+String encAddress = "buQdBdkvmAhnRrhLp4dmeCc2ft7RNE51c9EK";
+boolean isValid = PublicKey.isAddressValid(encAddress);
 ```
 
 ### 验签

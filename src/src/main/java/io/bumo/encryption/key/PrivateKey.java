@@ -3,6 +3,7 @@ package io.bumo.encryption.key;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.Signature;
+import java.util.Arrays;
 
 import io.bumo.encryption.common.CheckKey;
 import io.bumo.encryption.model.KeyMember;
@@ -118,6 +119,14 @@ public class PrivateKey {
 		}
 		return EncPrivateKey(keyMember.getKeyType(), keyMember.getRawSKey());
 	}
+
+	/**
+	 * @param encPrivateKey encode private key
+	 * @return true or false
+	 */
+	public static boolean isPrivateKeyValid(String encPrivateKey) {
+		return encPrivateKeyValid(encPrivateKey);
+	}
 	
 	
 	/**
@@ -132,7 +141,7 @@ public class PrivateKey {
 		}
 		return encPublicKey(keyMember.getKeyType(), rawPKey).toLowerCase();
 	}
-	
+
 	/**
 	 * @param skey encode private key
 	 * @return encode public key
@@ -144,7 +153,15 @@ public class PrivateKey {
 		byte[] rawPKey = getPublicKey(member);
 		return encPublicKey(member.getKeyType(), rawPKey).toLowerCase();
 	}
-	
+
+	/**
+	 * @param encPublicKey encode public key
+	 * @return true or false
+	 */
+	public static boolean isPublicKeyValid(String encPublicKey) {
+		return PublicKey.isPublicKeyValid(encPublicKey);
+	}
+
 	/**
 	 * @return encode address
 	 * @throws Exception 
@@ -161,7 +178,14 @@ public class PrivateKey {
 	public static String getEncAddress(String pKey) throws Exception {
 		return PublicKey.getEncAddress(pKey);
 	}
-	
+
+	/**
+	 * @param encAddress encode address
+	 * @return true or false
+	 */
+	public static boolean isAddressValid(String encAddress) {
+		return PublicKey.isAddressValid(encAddress);
+	}
 	/**
 	 * sign message
 	 * @param msg message
@@ -250,6 +274,41 @@ public class PrivateKey {
 		System.arraycopy(hash2, 0, tmp, buff.length, 4);
 		
 		return Base58.encode(tmp);
+	}
+	private static boolean encPrivateKeyValid(String encPrivateKey) {
+		boolean valid = false;
+		do {
+			if (null == encPrivateKey) {
+				break;
+			}
+
+			byte[] privateKeyTemp = Base58.decode(encPrivateKey);
+
+			if (privateKeyTemp.length != 41 || privateKeyTemp[0] != (byte)0xDA || privateKeyTemp[1] != (byte)0x37 ||
+					privateKeyTemp[2] != (byte)0x9F || privateKeyTemp[3] != (byte)0x01) {
+				break;
+			}
+
+			int len = privateKeyTemp.length;
+
+			byte[] checkSum = new byte[4];
+			System.arraycopy(privateKeyTemp, len - 4, checkSum, 0, 4);
+
+			byte[] buff = new byte[len - 4];
+			System.arraycopy(privateKeyTemp, 0, buff, 0, len - 4);
+
+			byte[] hash1 = CheckKey.CalHash(KeyType.ED25519, buff);
+			byte[] hash2 = CheckKey.CalHash(KeyType.ED25519, hash1);
+
+			byte[] checkSumCol = new byte[4];
+			System.arraycopy(hash2, 0, checkSumCol, 0, 4);
+			if (!Arrays.equals(checkSum, checkSumCol)) {
+				break;
+			}
+
+			valid = true;
+		} while (false);
+		return valid;
 	}
 	private static String encPublicKey(KeyType type, byte[] raw_pkey) throws Exception {
 		if (null == raw_pkey) {

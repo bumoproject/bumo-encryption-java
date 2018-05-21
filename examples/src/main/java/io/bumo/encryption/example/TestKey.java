@@ -30,6 +30,9 @@ public class TestKey {
 		String privateKey = "privbtGQELqNswoyqgnQ9tcfpkuH8P1Q6quvoybqZ9oTVwWhS6Z2hi1B";
 		String publicKey = "b001b6d3120599d19cae7adb6c5e2674ede8629c871cb8b93bd05bb34d203cd974c3f0bc07e5";
 		String address = "buQdBdkvmAhnRrhLp4dmeCc2ft7RNE51c9EK";
+		System.out.println("The validation of address: " + PublicKey.isAddressValid(address));
+		System.out.println("The validation of public key: " + PublicKey.isPublicKeyValid(publicKey));
+		System.out.println("The validation of private key: " + PrivateKey.isPrivateKeyValid(privateKey));
 
 		// create A
 		System.out.println("create A: ");

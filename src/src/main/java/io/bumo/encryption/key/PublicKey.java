@@ -2,6 +2,7 @@ package io.bumo.encryption.key;
 
 import java.security.MessageDigest;
 import java.security.Signature;
+import java.util.Arrays;
 
 import io.bumo.encryption.common.CheckKey;
 import io.bumo.encryption.model.KeyMember;
@@ -92,7 +93,23 @@ public class PublicKey {
 		
 		return encAddress(member.getKeyType(), member.getRawPKey());
 	}
-	
+
+	/**
+	 * @param encAddress encode address
+	 * @return true or false
+	 */
+	public static boolean isAddressValid(String encAddress) {
+		return encAddressValid(encAddress);
+	}
+
+	/**
+	 * @param encPublicKey encode public key
+	 * @return true or false
+	 */
+	public static boolean isPublicKeyValid(String encPublicKey) {
+		return encPublicKeyValid(encPublicKey);
+	}
+
 	/**
 	 * check sign datas
 	 * @param msg source message
@@ -159,6 +176,43 @@ public class PublicKey {
 		member.setRawPKey(rawPKey);
 		member.setKeyType(type);
 	}
+
+	private static boolean encPublicKeyValid(String encPublicKey) {
+		boolean valid = false;
+		do {
+			if (null == encPublicKey) {
+				break;
+			}
+			if (!HexFormat.isHexString(encPublicKey)) {
+				break;
+			}
+
+			KeyType type = null;
+			byte[] buffPKey = HexFormat.hexToByte(encPublicKey);
+			if (buffPKey.length < 6 || buffPKey[0] != (byte)0xB0 || buffPKey[1] != (byte)0x01) {
+				break;
+			}
+
+			int len = buffPKey.length;
+			byte[] checkSum = new byte[4];
+			System.arraycopy(buffPKey, len - 4, checkSum, 0, 4);
+
+			byte[] buff = new byte[len - 4];
+			System.arraycopy(buffPKey, 0, buff, 0, len - 4);
+
+			byte[] hash1 = CheckKey.CalHash(KeyType.ED25519, buff);
+			byte[] hash2 = CheckKey.CalHash(KeyType.ED25519, hash1);
+
+			byte[] checkSumCol = new byte[4];
+			System.arraycopy(hash2, 0, checkSumCol, 0, 4);
+			if (!Arrays.equals(checkSum, checkSumCol)) {
+				break;
+			}
+
+			valid = true;
+		} while (false);
+		return valid;
+	}
 	
 	private static String encAddress(KeyType type, byte[] raw_pkey) {
 		byte[] buff = new byte[23];
@@ -177,6 +231,40 @@ public class PublicKey {
 		System.arraycopy(hash2, 0, tmp, buff.length, 4);
 		
 		return Base58.encode(tmp);
+	}
+
+	private static boolean encAddressValid(String encAddress) {
+		boolean valid = false;
+		do {
+			if (null == encAddress) {
+				break;
+			}
+			byte[] addressTemp = Base58.decode(encAddress);
+			if (addressTemp.length != 27 || addressTemp[0] != (byte)0x01 || addressTemp[1] != (byte)0x56
+					|| addressTemp[2] != (byte)0x01) {
+				break;
+			}
+
+			int len = addressTemp.length;
+			byte[] checkSum = new byte[4];
+			System.arraycopy(addressTemp, len - 4, checkSum, 0, 4);
+
+			byte[] buff = new byte[len - 4];
+			System.arraycopy(addressTemp, 0, buff, 0, len - 4);
+
+			byte[] hash1 = CheckKey.CalHash(KeyType.ED25519, buff);
+			byte[] hash2 = CheckKey.CalHash(KeyType.ED25519, hash1);
+
+			byte[] checkSumCol = new byte[4];
+			System.arraycopy(hash2, 0, checkSumCol, 0, 4);
+			if (!Arrays.equals(checkSum, checkSumCol)) {
+				break;
+			}
+
+			valid = true;
+		} while (false);
+
+		return valid;
 	}
 	
 	private static boolean verifyMessage(byte[] msg, byte[] sign, KeyMember member) throws Exception {
