@@ -20,4 +20,17 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>pubnexus</id>
+            <url>http://maven.bumo.io/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
 </project>
