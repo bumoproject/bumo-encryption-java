@@ -10,6 +10,7 @@ public class TestCrypto {
 		String password = "test1234";
 		TestKeyStoreWithPrivateKey(encPrivateKey, password);
 		TestKeyStoreWithNoPrivateKey(password);
+		TestKeyStoreWithNoNRP(password);
 	}
 	
 	public static void TestKeyStoreWithPrivateKey(String encPrivateKey, String password) {
@@ -39,6 +40,19 @@ public class TestCrypto {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	}
+
+	public static void TestKeyStoreWithNoNRP(String password) {
+		JSONObject keyStore = new JSONObject();
+		try {
+			String encPrivateKey = KeyStore.generateKeyStore(null, password, keyStore);
+			System.out.println(encPrivateKey);
+			System.out.println(keyStore.toJSONString());
+
+			encPrivateKey = KeyStore.from(keyStore, password);
+			System.out.println(encPrivateKey);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

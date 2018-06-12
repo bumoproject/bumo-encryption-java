@@ -19,7 +19,7 @@ public class KeyStore {
 	 * @param p Parallelization parameter, if p is null, the default value is 1
 	 * @return keyStore this is the store of encode private key, cannot be null
 	 * @return encPrivateKey if encPrivateKey was null, return a new one, otherwise return itself
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static String generateKeyStore(String encPrivateKey, String password, Integer n, Integer r, Integer p, JSONObject keyStore) throws Exception {
 		if (keyStore == null) {
@@ -29,17 +29,17 @@ public class KeyStore {
 		int R = (r == null ? 8 : r.intValue());
 		int P = (p == null ? 1 : p.intValue());
 		int dkLen = 32;
-		
+
 		byte[] salt = new byte[32];
 		SecureRandom randomSalt = new SecureRandom();
 		randomSalt.nextBytes(salt);
-		
+
 		byte[] aesIv = new byte[16];
 		SecureRandom randomIv = new SecureRandom();
 		randomIv.nextBytes(aesIv);
-		
+
 		byte[] dk = SCrypt.scrypt(password.getBytes(), salt, N, R, P, dkLen);
-		
+
 		String address = "";
 		if (encPrivateKey == null || encPrivateKey.isEmpty()) {
 			PrivateKey privateKey = new PrivateKey(KeyType.ED25519);
@@ -51,7 +51,7 @@ public class KeyStore {
 			address = privateKey.getEncAddress();
 		}
 		byte[] cyperText = AesCtr.encrypt(encPrivateKey.getBytes(), dk, aesIv);
-		
+
 		keyStore.put("version", 2);
 		JSONObject scryptParams = new JSONObject();
 		scryptParams.put("n", N);
@@ -64,6 +64,17 @@ public class KeyStore {
 		keyStore.put("address", address);
 
 		return encPrivateKey;
+	}
+
+	/**
+	 * @param encPrivateKey this is the encode private key to be stored
+	 * @param password
+	 * @return keyStore this is the store of encode private key, cannot be null
+	 * @return encPrivateKey if encPrivateKey was null, return a new one, otherwise return itself
+	 * @throws Exception
+	 */
+	public static String generateKeyStore(String encPrivateKey, String password, JSONObject keyStore) throws Exception {
+		return generateKeyStore(encPrivateKey, password, null, null, null, keyStore);
 	}
 	
 	/**
