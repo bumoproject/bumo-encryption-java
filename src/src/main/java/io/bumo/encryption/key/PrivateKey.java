@@ -1,11 +1,10 @@
 package io.bumo.encryption.key;
 
-import java.security.KeyPair;
-import java.security.MessageDigest;
-import java.security.Signature;
+import java.security.*;
 import java.util.Arrays;
 
 import io.bumo.encryption.common.CheckKey;
+import io.bumo.encryption.exception.EncException;
 import io.bumo.encryption.model.KeyMember;
 import io.bumo.encryption.model.KeyType;
 import io.bumo.encryption.utils.base.Base58;
@@ -25,18 +24,18 @@ public class PrivateKey {
 	
 	/**
 	 * generate key pair (default: ed25519)
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public PrivateKey() throws Exception {
+	public PrivateKey() throws EncException {
 		this(KeyType.ED25519);
 	}
 	
 	/**
 	 * generate key pair
 	 * @param  type the type of key
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public PrivateKey(KeyType type) throws Exception {
+	public PrivateKey(KeyType type) throws EncException {
 		switch (type) {
 		case ED25519: {
 			KeyPairGenerator keyPairGenerator = new KeyPairGenerator();
@@ -48,7 +47,7 @@ public class PrivateKey {
 			break;
 		}
 		default:
-			throw new Exception("type does not exist");
+			throw new EncException("type does not exist");
 		}
 		setKeyType(type);
 		publicKey.setKeyType(type);
@@ -57,9 +56,9 @@ public class PrivateKey {
 	/**
 	 * generate key pair
 	 * @param skey private key
-	 * @throws Exception
+	 * @throws EncException
 	 */
-	public PrivateKey(String skey) throws Exception {
+	public PrivateKey(String skey) throws EncException {
 		getPrivateKey(skey, keyMember);
 		publicKey.setKeyType(keyMember.getKeyType());
 		byte[] rawPKey = getPublicKey(keyMember);
@@ -110,12 +109,12 @@ public class PrivateKey {
 	/**
 	 *
 	 * @return encode private key
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public String getEncPrivateKey() throws Exception {
+	public String getEncPrivateKey() throws EncException {
 		byte[] rawSKey = keyMember.getRawSKey();
 		if (rawSKey == null) {
-			throw new Exception("raw private key is null");
+			throw new EncException("raw private key is null");
 		}
 		return EncPrivateKey(keyMember.getKeyType(), keyMember.getRawSKey());
 	}
@@ -132,12 +131,12 @@ public class PrivateKey {
 	/**
 	 *  
 	 * @return encode public key
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public String getEncPublicKey() throws Exception {
+	public String getEncPublicKey() throws EncException {
 		byte[] rawPKey = publicKey.getRawPublicKey();
 		if (rawPKey == null) {
-			throw new Exception("raw public key is null");
+			throw new EncException("raw public key is null");
 		}
 		return encPublicKey(keyMember.getKeyType(), rawPKey).toLowerCase();
 	}
@@ -145,9 +144,9 @@ public class PrivateKey {
 	/**
 	 * @param skey encode private key
 	 * @return encode public key
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public static String getEncPublicKey(String skey) throws Exception {
+	public static String getEncPublicKey(String skey) throws EncException {
 		KeyMember member = new KeyMember();
 		getPrivateKey(skey, member);
 		byte[] rawPKey = getPublicKey(member);
@@ -164,18 +163,18 @@ public class PrivateKey {
 
 	/**
 	 * @return encode address
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public String getEncAddress() throws Exception {
+	public String getEncAddress() throws EncException {
 		return publicKey.getEncAddress();
 	}
 	
 	/**
 	 * @param pKey encode public key
 	 * @return encode address
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public static String getEncAddress(String pKey) throws Exception {
+	public static String getEncAddress(String pKey) throws EncException {
 		return PublicKey.getEncAddress(pKey);
 	}
 
@@ -190,9 +189,9 @@ public class PrivateKey {
 	 * sign message
 	 * @param msg message
 	 * @return sign data
-	 * @throws Exception
+	 * @throws EncException
 	 */
-	public byte[] sign(byte[] msg) throws Exception {
+	public byte[] sign(byte[] msg) throws EncException {
 		return signMessage(msg, keyMember);
 	}
 	
@@ -201,9 +200,9 @@ public class PrivateKey {
 	 * @param msg message
 	 * @param skey private key
 	 * @return sign data
-	 * @throws Exception
+	 * @throws EncException
 	 */
-	public static byte[] sign(byte[] msg, String skey) throws Exception {
+	public static byte[] sign(byte[] msg, String skey) throws EncException {
 		KeyMember member = new KeyMember();
 		getPrivateKey(skey, member);
 		byte[] rawPKey = getPublicKey(member);
@@ -211,33 +210,38 @@ public class PrivateKey {
 		return signMessage(msg, member);
 	}
 	
-	private static void getPrivateKey(String bSkey, KeyMember member) throws Exception {
-		if (null == bSkey) {
-			throw new Exception("private key cannot be null");
+	private static void getPrivateKey(String bSkey, KeyMember member) throws EncException {
+		try {
+			if (null == bSkey) {
+				throw new EncException("Private key cannot be null");
+			}
+
+			byte[] skeyTmp = Base58.decode(bSkey);
+			if (skeyTmp.length <= 9) {
+				throw new EncException("Private key (" + bSkey + ") is invalid");
+			}
+
+			if (skeyTmp[3] != 1) {
+				throw new EncException("Private key (" + bSkey + ") is invalid");
+			}
+			KeyType type = KeyType.values()[skeyTmp[3] - 1];
+
+			// checksum
+			if (!CheckKey.CheckSum(type, skeyTmp)) {
+				throw new EncException("Private key (" + bSkey + ") is invalid");
+			}
+
+			byte[] rawSKey = new byte[skeyTmp.length - 9];
+			System.arraycopy(skeyTmp, 4, rawSKey, 0, rawSKey.length);
+
+			member.setKeyType(type);
+			member.setRawSKey(rawSKey);
+		} catch (Exception e) {
+			throw new EncException("Invalid privateKey");
 		}
-		
-		byte[] skeyTmp = Base58.decode(bSkey);
-		if (skeyTmp.length <= 9) {
-			throw new Exception("private key (" + bSkey + ") is invalid");
-		}
-		
-		if (skeyTmp[3] != 1) {
-			throw new Exception("private key (" + bSkey + ") is invalid");
-		}
-		KeyType type = KeyType.values()[skeyTmp[3] - 1];
-		
-		// checksum
-		if (!CheckKey.CheckSum(type, skeyTmp)) {
-			throw new Exception("private key (" + bSkey + ") is invalid");
-		}
-		
-		byte[] rawSKey = new byte[skeyTmp.length - 9];
-		System.arraycopy(skeyTmp, 4, rawSKey, 0, rawSKey.length);
-		
-		member.setKeyType(type);
-		member.setRawSKey(rawSKey);
+
 	}
-	private static byte[] getPublicKey(KeyMember member) throws Exception {
+	private static byte[] getPublicKey(KeyMember member) throws EncException {
 		byte[] rawPKey = null;
 		switch (member.getKeyType()) {
 		case ED25519: {
@@ -249,13 +253,13 @@ public class PrivateKey {
 			break;
 		}
 		default:
-			throw new Exception("type does not exist");
+			throw new EncException("Type does not exist");
 		}
 		return rawPKey;
 	}
-	private static String EncPrivateKey(KeyType type, byte[] raw_skey) throws Exception {
+	private static String EncPrivateKey(KeyType type, byte[] raw_skey) throws EncException {
 		if (null == raw_skey) {
-			throw new Exception("private key is null");
+			throw new EncException("Private key is null");
 		}
 		byte[] buff = new byte[raw_skey.length + 5];
 		buff[0] = (byte) 0xDA;
@@ -275,18 +279,18 @@ public class PrivateKey {
 		
 		return Base58.encode(tmp);
 	}
-	private static boolean encPrivateKeyValid(String encPrivateKey) {
-		boolean valid = false;
-		do {
+	private static boolean encPrivateKeyValid(String encPrivateKey) throws EncException {
+		boolean valid;
+		try {
 			if (null == encPrivateKey) {
-				break;
+				throw new EncException("Invalid privateKey");
 			}
 
 			byte[] privateKeyTemp = Base58.decode(encPrivateKey);
 
 			if (privateKeyTemp.length != 41 || privateKeyTemp[0] != (byte)0xDA || privateKeyTemp[1] != (byte)0x37 ||
 					privateKeyTemp[2] != (byte)0x9F || privateKeyTemp[3] != (byte)0x01) {
-				break;
+				throw new EncException("Invalid privateKey");
 			}
 
 			int len = privateKeyTemp.length;
@@ -303,16 +307,18 @@ public class PrivateKey {
 			byte[] checkSumCol = new byte[4];
 			System.arraycopy(hash2, 0, checkSumCol, 0, 4);
 			if (!Arrays.equals(checkSum, checkSumCol)) {
-				break;
+				throw new EncException("Invalid privateKey");
 			}
 
 			valid = true;
-		} while (false);
+		} catch (Exception e) {
+			throw new EncException("Invalid privateKey");
+		}
 		return valid;
 	}
-	private static String encPublicKey(KeyType type, byte[] raw_pkey) throws Exception {
+	private static String encPublicKey(KeyType type, byte[] raw_pkey) throws EncException {
 		if (null == raw_pkey) {
-			throw new Exception("public key is null");
+			throw new EncException("Public key is null");
 		}
 		int length = raw_pkey.length + 2;
 		byte[] buff = new byte[length];
@@ -330,26 +336,34 @@ public class PrivateKey {
 		
 		return HexFormat.byteToHex(tmp);
 	}
-	private static byte[] signMessage(byte[] msg, KeyMember member) throws Exception {
+	private static byte[] signMessage(byte[] msg, KeyMember member) throws EncException {
 		if (null == member.getRawSKey()) {
-			throw new Exception("raw private key is null");
+			throw new EncException("Raw private key is null");
 		}
 		byte[] signMsg = null;
-		
-		switch (member.getKeyType()) {
-		case ED25519: {
-			Signature sgr = new EdDSAEngine(MessageDigest.getInstance("SHA-512"));
-			EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("ed25519-sha-512");
-			EdDSAPrivateKeySpec sKeySpec = new EdDSAPrivateKeySpec(member.getRawSKey(), spec);
-			EdDSAPrivateKey sKey = new EdDSAPrivateKey(sKeySpec);
-			sgr.initSign(sKey);
-			sgr.update(msg);
-			
-			signMsg = sgr.sign();
-			break;
-		}
-		default:
-			throw new Exception("type does not exist");
+
+		try {
+			switch (member.getKeyType()) {
+				case ED25519: {
+					Signature sgr = new EdDSAEngine(MessageDigest.getInstance("SHA-512"));
+					EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("ed25519-sha-512");
+					EdDSAPrivateKeySpec sKeySpec = new EdDSAPrivateKeySpec(member.getRawSKey(), spec);
+					EdDSAPrivateKey sKey = new EdDSAPrivateKey(sKeySpec);
+					sgr.initSign(sKey);
+					sgr.update(msg);
+
+					signMsg = sgr.sign();
+					break;
+				}
+				default:
+					throw new EncException("Type does not exist");
+			}
+		} catch (NoSuchAlgorithmException e) {
+			throw new EncException("System error");
+		} catch (InvalidKeyException e) {
+			throw new EncException("Invalid privateKey");
+		} catch (SignatureException e) {
+			throw new EncException("Sign message failed");
 		}
 		
 		return signMsg;

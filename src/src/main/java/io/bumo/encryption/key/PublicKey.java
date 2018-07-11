@@ -1,10 +1,10 @@
 package io.bumo.encryption.key;
 
-import java.security.MessageDigest;
-import java.security.Signature;
+import java.security.*;
 import java.util.Arrays;
 
 import io.bumo.encryption.common.CheckKey;
+import io.bumo.encryption.exception.EncException;
 import io.bumo.encryption.model.KeyMember;
 import io.bumo.encryption.model.KeyType;
 import io.bumo.encryption.utils.base.Base58;
@@ -24,16 +24,16 @@ public class PublicKey {
 	/**
 	 * structure with encrytion public key
 	 */
-	public PublicKey(String encPublicKey) throws Exception {
+	public PublicKey(String encPublicKey) throws EncException {
 		getPublicKey(encPublicKey, keyMember);
 	}
 	
 	/**
 	 * set enc public key
 	 * @param encPublicKey encryption public key
-	 * @throws Exception
+	 * @throws EncException
 	 */
-	public void setEncPublicKey(String encPublicKey) throws Exception {
+	public void setEncPublicKey(String encPublicKey) throws EncException {
 		getPublicKey(encPublicKey, keyMember);
 	}
 	
@@ -71,12 +71,12 @@ public class PublicKey {
 	
 	/**
 	 * @return encode address
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public String getEncAddress() throws Exception {
+	public String getEncAddress() throws EncException {
 		byte[] raw_pkey = keyMember.getRawPKey();
 		if (null == raw_pkey) {
-			throw new Exception("public key is null");
+			throw new EncException("public key is null");
 		}
 		
 		return encAddress(keyMember.getKeyType(), raw_pkey);
@@ -85,9 +85,9 @@ public class PublicKey {
 	/**
 	 * @param pKey encode public key
 	 * @return encode address
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public static String getEncAddress(String pKey) throws Exception {
+	public static String getEncAddress(String pKey) throws EncException {
 		KeyMember member = new KeyMember();
 		getPublicKey(pKey, member);
 		
@@ -115,9 +115,9 @@ public class PublicKey {
 	 * @param msg source message
 	 * @param signMsg signed message
 	 * @return true or false
-	 * @throws Exception
+	 * @throws EncException
 	 */
-	public boolean verify(byte[] msg, byte[] signMsg) throws Exception {
+	public boolean verify(byte[] msg, byte[] signMsg) throws EncException {
 		boolean verifySuccess = false;
 		verifySuccess = verifyMessage(msg, signMsg, keyMember);
 		
@@ -130,9 +130,9 @@ public class PublicKey {
 	 * @param signMsg signed message
 	 * @param encPublicKey enc public key
 	 * @return true or false
-	 * @throws Exception 
+	 * @throws EncException 
 	 */
-	public static boolean verify(byte[] msg, byte[] signMsg, String encPublicKey) throws Exception {
+	public static boolean verify(byte[] msg, byte[] signMsg, String encPublicKey) throws EncException {
 		boolean verifySuccess = false;
 		KeyMember member = new KeyMember();
 		getPublicKey(encPublicKey, member);
@@ -141,34 +141,34 @@ public class PublicKey {
 		return verifySuccess;
 	}
 	
-	private static void getPublicKey(String bPkey, KeyMember member) throws Exception {
+	private static void getPublicKey(String bPkey, KeyMember member) throws EncException {
 		if (null == bPkey) {
-			throw new Exception("public key cannot be null");
+			throw new EncException("public key cannot be null");
 		}
 
 		if (!HexFormat.isHexString(bPkey)) {
-			throw new Exception("public key (" + bPkey + ") is invalid, please check");
+			throw new EncException("public key (" + bPkey + ") is invalid, please check");
 		}
 
 		KeyType type = null;
 		byte[] buffPKey = HexFormat.hexToByte(bPkey);
 		
 		if (buffPKey.length < 6) {
-			throw new Exception("public key (" + bPkey + ") is invalid, please check");
+			throw new EncException("public key (" + bPkey + ") is invalid, please check");
 		}
 		
 		if (buffPKey[0] != (byte)0xB0) {
-			throw new Exception("public key (" + bPkey + ") is invalid, please check");
+			throw new EncException("public key (" + bPkey + ") is invalid, please check");
 		}
 		
 		if (buffPKey[1] != 1) {
-			throw new Exception("public key (" + bPkey + ") is invalid, please check");
+			throw new EncException("public key (" + bPkey + ") is invalid, please check");
 		}
 		type = KeyType.values()[buffPKey[1] - 1];
 		
 		// checksum
 		if (!CheckKey.CheckSum(type, buffPKey)) {
-			throw new Exception("public key (" + bPkey + ") is invalid, please check");
+			throw new EncException("public key (" + bPkey + ") is invalid, please check");
 		}
 		
 		byte[] rawPKey = new byte[buffPKey.length - 6];
@@ -177,20 +177,20 @@ public class PublicKey {
 		member.setKeyType(type);
 	}
 
-	private static boolean encPublicKeyValid(String encPublicKey) {
-		boolean valid = false;
-		do {
+	private static boolean encPublicKeyValid(String encPublicKey) throws EncException {
+		boolean valid;
+		try {
 			if (null == encPublicKey) {
-				break;
+				throw new EncException("Invalid publicKey");
 			}
 			if (!HexFormat.isHexString(encPublicKey)) {
-				break;
+				throw new EncException("Invalid publicKey");
 			}
 
 			KeyType type = null;
 			byte[] buffPKey = HexFormat.hexToByte(encPublicKey);
 			if (buffPKey.length < 6 || buffPKey[0] != (byte)0xB0 || buffPKey[1] != (byte)0x01) {
-				break;
+				throw new EncException("Invalid publicKey");
 			}
 
 			int len = buffPKey.length;
@@ -206,11 +206,13 @@ public class PublicKey {
 			byte[] checkSumCol = new byte[4];
 			System.arraycopy(hash2, 0, checkSumCol, 0, 4);
 			if (!Arrays.equals(checkSum, checkSumCol)) {
-				break;
+				throw new EncException("Invalid publicKey");
 			}
 
 			valid = true;
-		} while (false);
+		} catch (Exception exception) {
+			throw new EncException("Invalid publicKey");
+		}
 		return valid;
 	}
 	
@@ -233,16 +235,16 @@ public class PublicKey {
 		return Base58.encode(tmp);
 	}
 
-	private static boolean encAddressValid(String encAddress) {
+	private static boolean encAddressValid(String encAddress) throws EncException {
 		boolean valid = false;
-		do {
+		try {
 			if (null == encAddress) {
-				break;
+				throw new EncException("Invalid address");
 			}
 			byte[] addressTemp = Base58.decode(encAddress);
 			if (addressTemp.length != 27 || addressTemp[0] != (byte)0x01 || addressTemp[1] != (byte)0x56
 					|| addressTemp[2] != (byte)0x01) {
-				break;
+				throw new EncException("Invalid address");
 			}
 
 			int len = addressTemp.length;
@@ -258,31 +260,43 @@ public class PublicKey {
 			byte[] checkSumCol = new byte[4];
 			System.arraycopy(hash2, 0, checkSumCol, 0, 4);
 			if (!Arrays.equals(checkSum, checkSumCol)) {
-				break;
+				throw new EncException("Invalid address");
 			}
 
 			valid = true;
-		} while (false);
+		} catch (Exception e) {
+			throw new EncException("Invalid address");
+		}
 
 		return valid;
 	}
 	
-	private static boolean verifyMessage(byte[] msg, byte[] sign, KeyMember member) throws Exception {
+	private static boolean verifyMessage(byte[] msg, byte[] sign, KeyMember member) throws EncException {
+
 		boolean verifySuccess = false;
-		switch (member.getKeyType()) {
-		case ED25519: {
-			Signature sgr = new EdDSAEngine(MessageDigest.getInstance("SHA-512"));
-			EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("ed25519-sha-512");
-			EdDSAPublicKeySpec eddsaPubKey = new EdDSAPublicKeySpec(member.getRawPKey(), spec);
-			EdDSAPublicKey vKey = new EdDSAPublicKey(eddsaPubKey);
-			sgr.initVerify(vKey);
-			sgr.update(msg);
-			verifySuccess = sgr.verify(sign);
-			break;
+		try {
+			switch (member.getKeyType()) {
+				case ED25519: {
+					Signature sgr = new EdDSAEngine(MessageDigest.getInstance("SHA-512"));
+					EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("ed25519-sha-512");
+					EdDSAPublicKeySpec eddsaPubKey = new EdDSAPublicKeySpec(member.getRawPKey(), spec);
+					EdDSAPublicKey vKey = new EdDSAPublicKey(eddsaPubKey);
+					sgr.initVerify(vKey);
+					sgr.update(msg);
+					verifySuccess = sgr.verify(sign);
+					break;
+				}
+				default:
+					throw new EncException("type does not exist");
+			}
+		} catch (NoSuchAlgorithmException e) {
+			throw new EncException("System error");
+		} catch (InvalidKeyException e) {
+			throw new EncException("Invalid publicKey");
+		} catch (SignatureException e) {
+			throw new EncException("Verify signature failed");
 		}
-		default:
-			throw new Exception("type does not exist");
-		}
+
 		return verifySuccess;
 	}
 }
