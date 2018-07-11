@@ -118,8 +118,7 @@ public class PublicKey {
 	 * @throws EncException
 	 */
 	public boolean verify(byte[] msg, byte[] signMsg) throws EncException {
-		boolean verifySuccess = false;
-		verifySuccess = verifyMessage(msg, signMsg, keyMember);
+		boolean verifySuccess = verifyMessage(msg, signMsg, keyMember);
 		
 		return verifySuccess;
 	}
@@ -177,7 +176,7 @@ public class PublicKey {
 		member.setKeyType(type);
 	}
 
-	private static boolean encPublicKeyValid(String encPublicKey) throws EncException {
+	private static boolean encPublicKeyValid(String encPublicKey) {
 		boolean valid;
 		try {
 			if (null == encPublicKey) {
@@ -211,7 +210,7 @@ public class PublicKey {
 
 			valid = true;
 		} catch (Exception exception) {
-			throw new EncException("Invalid publicKey");
+            valid = false;
 		}
 		return valid;
 	}
@@ -235,8 +234,8 @@ public class PublicKey {
 		return Base58.encode(tmp);
 	}
 
-	private static boolean encAddressValid(String encAddress) throws EncException {
-		boolean valid = false;
+	private static boolean encAddressValid(String encAddress) {
+		boolean valid;
 		try {
 			if (null == encAddress) {
 				throw new EncException("Invalid address");
@@ -265,15 +264,14 @@ public class PublicKey {
 
 			valid = true;
 		} catch (Exception e) {
-			throw new EncException("Invalid address");
+            valid = false;
 		}
 
 		return valid;
 	}
 	
-	private static boolean verifyMessage(byte[] msg, byte[] sign, KeyMember member) throws EncException {
-
-		boolean verifySuccess = false;
+	private static boolean verifyMessage(byte[] msg, byte[] sign, KeyMember member) {
+		boolean verifySuccess;
 		try {
 			switch (member.getKeyType()) {
 				case ED25519: {
@@ -289,12 +287,8 @@ public class PublicKey {
 				default:
 					throw new EncException("type does not exist");
 			}
-		} catch (NoSuchAlgorithmException e) {
-			throw new EncException("System error");
-		} catch (InvalidKeyException e) {
-			throw new EncException("Invalid publicKey");
-		} catch (SignatureException e) {
-			throw new EncException("Verify signature failed");
+		} catch (Exception e) {
+            verifySuccess = false;
 		}
 
 		return verifySuccess;

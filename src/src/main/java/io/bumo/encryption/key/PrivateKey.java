@@ -279,7 +279,7 @@ public class PrivateKey {
 		
 		return Base58.encode(tmp);
 	}
-	private static boolean encPrivateKeyValid(String encPrivateKey) throws EncException {
+	private static boolean encPrivateKeyValid(String encPrivateKey) {
 		boolean valid;
 		try {
 			if (null == encPrivateKey) {
@@ -312,7 +312,7 @@ public class PrivateKey {
 
 			valid = true;
 		} catch (Exception e) {
-			throw new EncException("Invalid privateKey");
+            valid = false;
 		}
 		return valid;
 	}
