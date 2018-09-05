@@ -55,6 +55,22 @@ public class PrivateKey {
 
 	/**
 	 * generate key pair
+	 * @param  seed The seed
+	 * @throws EncException
+	 */
+	public PrivateKey(byte[] seed) {
+		EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("ed25519-sha-512");
+		EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(seed, spec);
+		EdDSAPublicKeySpec spec2 = new EdDSAPublicKeySpec(privKey.getA(),spec);
+		EdDSAPublicKey pDsaPublicKey = new EdDSAPublicKey(spec2);
+		publicKey.setRawPublicKey(pDsaPublicKey.getAbyte());
+		keyMember.setRawSKey(seed);
+		setKeyType(KeyType.ED25519);
+		publicKey.setKeyType(KeyType.ED25519);
+	}
+
+	/**
+	 * generate key pair
 	 * @param skey private key
 	 * @throws EncException
 	 */
