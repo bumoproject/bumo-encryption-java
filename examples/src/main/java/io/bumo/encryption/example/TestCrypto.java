@@ -2,8 +2,8 @@ package io.bumo.encryption.example;
 
 import com.alibaba.fastjson.JSON;
 
-import io.bumo.encryption.crypto.KeyStore;
-import io.bumo.encryption.crypto.entity.KeyStoreEty;
+import io.bumo.encryption.crypto.keystore.KeyStore;
+import io.bumo.encryption.crypto.keystore.entity.KeyStoreEty;
 
 public class TestCrypto {
 	public static void main(String argv[]) {

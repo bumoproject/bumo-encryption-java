@@ -1,4 +1,4 @@
-package io.bumo.encryption.crypto.entity;
+package io.bumo.encryption.crypto.keystore.entity;
 
 public class KeyStoreEty {
 	
