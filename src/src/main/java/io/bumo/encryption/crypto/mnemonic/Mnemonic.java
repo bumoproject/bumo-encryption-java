@@ -66,31 +66,4 @@ public class Mnemonic {
         }
         return privateKeys;
     }
-
-    public static void main (String[] argv) {
-        for (int i = 0; i < 1000; i++) {
-            byte[] aesIv = new byte[16];
-            SecureRandom randomIv = new SecureRandom();
-            randomIv.nextBytes(aesIv);
-
-            List<String> mnemonicCodes = generateMnemonicCode(aesIv);
-            for (String mnemonicCode : mnemonicCodes) {
-                System.out.print(mnemonicCode + " ");
-            }
-            System.out.println();
-
-
-            List<String> hdPaths = new ArrayList<>();
-            hdPaths.add("M/44/80/0/0/1");
-            List<String> privateKeys = generatePrivateKey(mnemonicCodes, hdPaths);
-            for (String privateKey : privateKeys) {
-                if (!PrivateKey.isPrivateKeyValid(privateKey)) {
-                    System.out.println("private is invalid");
-                    return;
-                }
-                System.out.print(privateKey + " ");
-            }
-            System.out.println();
-        }
-    }
 }
