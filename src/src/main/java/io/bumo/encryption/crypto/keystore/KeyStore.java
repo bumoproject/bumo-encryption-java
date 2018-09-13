@@ -1,9 +1,9 @@
-package io.bumo.encryption.crypto;
+package io.bumo.encryption.crypto.keystore;
 
 import java.security.SecureRandom;
 
-import io.bumo.encryption.crypto.entity.KeyStoreEty;
-import io.bumo.encryption.crypto.entity.ScryptParamsEty;
+import io.bumo.encryption.crypto.keystore.entity.KeyStoreEty;
+import io.bumo.encryption.crypto.keystore.entity.ScryptParamsEty;
 import io.bumo.encryption.key.PrivateKey;
 import io.bumo.encryption.model.KeyType;
 import io.bumo.encryption.utils.aes.AesCtr;

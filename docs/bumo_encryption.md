@@ -14,6 +14,9 @@
 - [密钥存储器](#密钥存储器)
 	- [生成密钥存储器](#生成密钥存储器)
 	- [解析密钥存储器](#解析密钥存储器)
+- [助记词](#助记词)
+	- [生成助记词](#生成助记词)
+	- [根据助记词生成私钥](#根据助记词生成私钥)
 - [计算哈希](#计算哈希)
 - [举例说明](#举例说明)
 	- [创建账户](#创建账户)
@@ -322,6 +325,75 @@ encPrivateKey = KeyStore.from(keyStore, password);
 System.out.println(encPrivateKey);
 ```
 
+## 助记词
+### 生成助记词
+此方法是静态方法
+
+请求参数：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| random | byte[] | 16位字节数组，必须是16位
+
+返回结果：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| mnemonicCodes | List<String> | 助记词
+
+例如：
+```java
+byte[] aesIv = new byte[16];
+SecureRandom randomIv = new SecureRandom();
+randomIv.nextBytes(aesIv);
+
+List<String> mnemonicCodes = Mnemonic.generateMnemonicCode(aesIv);
+for (String mnemonicCode : mnemonicCodes) {
+	System.out.print(mnemonicCode + " ");
+}
+System.out.println();
+```
+
+### 根据助记词生成私钥
+此方法是静态方法
+
+请求参数：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| mnemonicCodes | List<String> | 助记词
+| hdPaths | List<String> | 路径
+
+返回结果：
+
+|变量|类型|描述
+|:--- | --- | --- 
+| privateKeys | List<String> | 私钥
+
+例如：
+```java
+List<String> mnemonicCodes = new ArrayList<>();
+mnemonicCodes.add("wood");
+mnemonicCodes.add("floor");
+mnemonicCodes.add("submit");
+mnemonicCodes.add("traffic");
+mnemonicCodes.add("obvious");
+mnemonicCodes.add("indoor");
+mnemonicCodes.add("rocket");
+mnemonicCodes.add("lunch");
+mnemonicCodes.add("melt");
+mnemonicCodes.add("park");
+mnemonicCodes.add("regular");
+mnemonicCodes.add("vessel");
+
+List<String> hdPaths = new ArrayList<>();
+hdPaths.add("M/44/80/0/0/1");
+List<String> privateKeys = generatePrivateKey(mnemonicCodes, hdPaths);
+for (String privateKey : privateKeys) {
+	System.out.print(privateKey + " ");
+}
+System.out.println();
+```
 
 ## 计算哈希
 方法名：GenerateHashHex
