@@ -33,7 +33,7 @@ public class Mnemonic {
         return mnemonicCodes;
     }
 
-    public static List<String> generatePrivateKey(List<String> mnemonicCodes, List<String> hdPaths) throws EncException {
+    public static List<String> generatePrivateKeys(List<String> mnemonicCodes, List<String> hdPaths) throws EncException {
         if (null == mnemonicCodes || mnemonicCodes.size() == 0) {
             throw new EncException("The size of mnemonicCodes must be bigger than or equal to 0");
         }

@@ -388,7 +388,7 @@ mnemonicCodes.add("vessel");
 
 List<String> hdPaths = new ArrayList<>();
 hdPaths.add("M/44/80/0/0/1");
-List<String> privateKeys = generatePrivateKey(mnemonicCodes, hdPaths);
+List<String> privateKeys = generatePrivateKeys(mnemonicCodes, hdPaths);
 for (String privateKey : privateKeys) {
 	System.out.print(privateKey + " ");
 }
