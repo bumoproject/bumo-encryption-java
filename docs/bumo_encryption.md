@@ -90,8 +90,6 @@ PrivateKey privateKey = new PrivateKey(KeyType.ED25519);
 String encPublicKey = privateKey.getEncPublicKey();
 ```
 
-# BUMO JAVA ENCRYPTIOIN使用文档
-
 #### 静态接口
 方法名：getEncPublicKey
 注意：调用此方法不需要构造PrivateKey对象
