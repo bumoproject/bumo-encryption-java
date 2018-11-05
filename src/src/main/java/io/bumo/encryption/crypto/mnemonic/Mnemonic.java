@@ -2,6 +2,7 @@ package io.bumo.encryption.crypto.mnemonic;
 
 import io.bumo.encryption.exception.EncException;
 import io.bumo.encryption.key.PrivateKey;
+import io.bumo.encryption.utils.hex.HexFormat;
 import org.bitcoinj.crypto.*;
 
 import java.math.BigInteger;
@@ -42,6 +43,7 @@ public class Mnemonic {
         }
         byte[] seed = MnemonicCode.toSeed(mnemonicCodes, "");
         DeterministicKey deterministicKey =  HDKeyDerivation.createMasterPrivateKey(seed);
+
         DeterministicHierarchy deterministicHierarchy = new DeterministicHierarchy(deterministicKey);
         List<String> privateKeys = new ArrayList<>();
         for (String hdPath : hdPaths) {
